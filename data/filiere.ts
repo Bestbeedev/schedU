@@ -1,0 +1,63 @@
+type Filiere={
+    id :string;
+    name:string
+}
+
+export const filiere:Filiere[]=[
+    {
+        id:"MAC",
+        name:"MAC"
+    },
+    {
+        id:"SIL",
+        name:"SIL"
+    },
+    {
+        id:"HTR",
+        name:"HTR"
+    },
+    {
+        id:"SPRI",
+        name:"SPRI"
+    },
+    {
+        id:"SSRI",
+        name:"SSRI"
+    },
+    {
+        id:"SB",
+        name:"SB"
+    },
+    {
+        id:"MRH",
+        name:"MRH"
+    },
+    {
+        id:"RIT",
+        name:"RIT"
+    },
+    {
+        id:"CEGP",
+        name:"CEGP"
+    },
+    {
+        id:"BFA",
+        name:"BFA"
+    },
+    {
+        id:"CFE",
+        name:"CFE"
+    },
+    {
+        id:"TL",
+        name:"TL"
+    },
+    {
+        id:"ELT",
+        name:"ELT"
+    },
+    {
+        id:"MCL",
+        name:"MCL"
+    }
+]
