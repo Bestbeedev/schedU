@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthInitializer } from "@/lib/authInitializer";
 import { Toaster } from "sonner";
+import NetworkStatusListener from "@/components/layouts/NetworkStatus";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthInitializer />
+          <NetworkStatusListener/>
           <Toaster position="top-center"/>
           {children}
         </ThemeProvider>

@@ -3,30 +3,45 @@ import React, { useEffect, useState } from "react";
 import { useAuthStore } from "@/stores/auth";
 import { createClient } from "@/lib/client";
 import { useFiltersStore } from "@/stores/filters";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar, LogOut } from "lucide-react";
+
 export default function Header() {
   const supabase = createClient();
   const router = useRouter();
+  const { showAll } = useFiltersStore();
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("❌ Erreur de déconnexion :", error.message);
       return;
     }
-    // Reset l'état dans Zustand
     useAuthStore.getState().setUser(null);
     toast.success("Deconnexion reussie");
     router.push("/login");
   };
 
   return (
-    <header className="flex bg-white dark:bg-neutral-800 sticky top-0  justify-between px-6 py-4 border-t border border-b">
+    <header className="flex bg-white dark:bg-neutral-800 sticky top-0 justify-between px-6 py-4 border-t border border-b">
       <section className="flex gap-1 items-center">
         <Calendar className="size-5" />
         <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
+        <Badge variant={'outline'} className="text-sm">
+          v.1.0.0
+        </Badge>
       </section>
       <section className="flex gap-2">
-        <SelectFiliere />
-        <SelectGrade />
+        <SelectFiliere disabled={showAll} />
+        <SelectGrade disabled={showAll} />
       </section>
       <section className="flex gap-3">
         <ModeToggle />
@@ -39,18 +54,7 @@ export default function Header() {
   );
 }
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Calendar, LogOut } from "lucide-react";
-
-export function SelectFiliere() {
+export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
   const [departments, setDepartments] = useState<Filiere[]>([]);
   const { selectedDepartment, setSelectedDepartment } = useFiltersStore();
   const supabase = createClient();
@@ -68,7 +72,7 @@ export function SelectFiliere() {
   }, []);
 
   return (
-    <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+    <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={disabled}>
       <SelectTrigger className="w-[150px] dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
         <SelectValue placeholder="Filiere:" />
       </SelectTrigger>
@@ -86,7 +90,7 @@ export function SelectFiliere() {
   );
 }
 
-export function SelectGrade() {
+export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
   const [niveau, setNiveau] = useState<Filiere[]>([]);
   const { selectedStage, setSelectedStage } = useFiltersStore();
   const supabase = createClient();
@@ -104,7 +108,7 @@ export function SelectGrade() {
   }, []);
 
   return (
-    <Select value={selectedStage} onValueChange={setSelectedStage}>
+    <Select value={selectedStage} onValueChange={setSelectedStage} disabled={disabled}>
       <SelectTrigger className="w-[150px] dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
         <SelectValue placeholder="Niveau:" />
       </SelectTrigger>
@@ -149,6 +153,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Filiere } from "@/types/tables";
+import { Badge } from "../ui/badge";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();

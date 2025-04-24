@@ -6,11 +6,13 @@ import { WeekSchedule } from "@/types/tables";
 import { Delete, FilePenLine, GraduationCap, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuthStore } from "@/stores/auth";
+import { useFiltersStore } from "@/stores/filters";
 
 interface ScheduleWeekProps {
   schedulesByWeek: WeekSchedule[];
   selectedStage?: string;
   selectedDepartment?: string;
+  showAll?: boolean;
 }
 
 // Fonction utilitaire pour formater l'heure
@@ -26,10 +28,14 @@ export default function ScheduleWeek({
   schedulesByWeek,
   selectedStage,
   selectedDepartment,
+  showAll = false,
 }: ScheduleWeekProps) {
+  const { user } = useAuthStore();
+
   // Vérifier s'il y a des cours pour la semaine
   const hasSchedules = schedulesByWeek.some(({ schedules }) => {
     const filteredSchedules = schedules.filter((schedule) => {
+      if (showAll) return true;
       const stageMatch =
         !selectedStage || schedule.stage_name === selectedStage;
       const departmentMatch =
@@ -38,8 +44,6 @@ export default function ScheduleWeek({
     });
     return filteredSchedules.length > 0;
   });
-
-  const {user}=useAuthStore()
 
   if (!hasSchedules) {
     return (
@@ -63,6 +67,7 @@ export default function ScheduleWeek({
       {schedulesByWeek.map(({ week, schedules }) => {
         // Filtrer les programmes selon les critères sélectionnés
         const filteredSchedules = schedules.filter((schedule) => {
+          if (showAll) return true;
           const stageMatch =
             !selectedStage || schedule.stage_name === selectedStage;
           const departmentMatch =
@@ -96,7 +101,7 @@ export default function ScheduleWeek({
             className="border shadow-xl dark:bg-neutral-900/50 dark:border-neutral-700 border-neutral-200"
           >
             <CardContent className="p-6 overflow-x-auto w-full ">
-              <div className="mb-6 p-4 rounded-lg itmes-center flex justify-between bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
+              <div className="mb-6 p-4 rounded-lg items-center flex justify-between bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
                 <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   Semaine du{" "}
                   {format(new Date(week.start_date), "dd MMMM yyyy", {
@@ -107,14 +112,16 @@ export default function ScheduleWeek({
                     locale: fr,
                   })}
                 </h2>
-                {user && user?.role==="ADMIN" &&<div className="flex dark:text-white text-sm gap-2 items-center">
+                {user && user?.role === "ADMIN" && !showAll && (selectedStage || selectedDepartment) && (
+                  <div className="flex dark:text-white text-sm gap-2 items-center">
                     <Button className="dark:bg-red-500">
-                        <FilePenLine className="dark:text-white"/>
+                      <FilePenLine className="dark:text-white" />
                     </Button>
                     <Button className="dark:bg-green-600">
-                        <Delete className="dark:text-white"/>
+                      <Delete className="dark:text-white" />
                     </Button>
-                </div>}
+                  </div>
+                )}
               </div>
 
               {Object.values(groupedSchedules).map((group, index) => (
@@ -139,7 +146,7 @@ export default function ScheduleWeek({
                       <thead>
                         <tr className="border-b dark:border-neutral-700 text-center border-neutral-200">
                           <th className="py-3 px-4 text-center text-sm font-semibold text-neutral-600 dark:text-neutral-300">
-                            Cours
+                            Cours Programme
                           </th>
                           <th className="py-3 px-4 text-center text-sm font-semibold text-neutral-600 dark:text-neutral-300">
                             Horaires
@@ -162,7 +169,7 @@ export default function ScheduleWeek({
                         {group.schedules.map((course) => (
                           <tr
                             key={course.id}
-                            className="border-b dark:border-neutral-700 text-sm text-center border-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
+                            className="border-b dark:border-neutral-700 text-sm text-center border-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/60 transition-colors"
                           >
                             <td className="py-4 px-4">
                               <div className="font-medium  text-neutral-900 dark:text-neutral-100">

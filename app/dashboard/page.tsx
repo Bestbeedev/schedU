@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
-import { CalendarIcon, ChevronLeft, ChevronRight, GraduationCapIcon, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, GraduationCapIcon, Plus, ChevronDown, ChevronUp, RotateCcw, Eye, EyeOff, Book, Calendar1Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { scheduleSchema, weekSchema } from "@/zod/validation";
@@ -51,6 +51,20 @@ import { format } from "date-fns";
 import ScheduleWeek from "@/components/layouts/ScheduleWeek";
 import { getSchedulesByWeek } from "@/lib/schedule";
 import { useFiltersStore } from "@/stores/filters";
+import { Skeleton } from "@/components/ui/skeleton";
+import Header from "@/components/layouts/Header";
+
+const ScheduleSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[...Array(1)].map((_, index) => (
+        <div key={index} className="flex gap-4">
+          <Skeleton className="h-96 dark:bg-neutral-700/90 w-full" />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function Dashboard() {
   const { user } = useAuthStore();
@@ -58,6 +72,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [scheduleByDay, setScheduleByDay] = useState<WeekSchedule[]>([]);
   const [showAllPrograms, setShowAllPrograms] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   const form = useForm<z.infer<typeof scheduleSchema>>({
     resolver: zodResolver(scheduleSchema),
@@ -102,13 +117,6 @@ export default function Dashboard() {
   }, [selectedStage, selectedDepartment]);
 
   useEffect(() => {
-    // Récupérer les valeurs du localStorage au chargement
-    const storedStage = localStorage.getItem('selectedStage');
-    const storedDepartment = localStorage.getItem('selectedDepartment');
-    
-    // if (storedStage) setSelectedStage(storedStage);
-    // if (storedDepartment) setSelectedDepartment(storedDepartment);
-
     const fetchDepartments = async () => {
       const { data, error } = await supabase.from("departments").select("*");
       if (error) {
@@ -187,19 +195,34 @@ export default function Dashboard() {
     }
   }
 
+  const handleReload = async () => {
+    setIsLoading(true);
+    try {
+      const scheduleByDay = await getSchedulesByWeek();
+      setScheduleByDay(scheduleByDay);
+      toast.success("Données rafraîchies avec succès !");
+    } catch (error) {
+      console.error("Erreur lors du rafraîchissement :", error);
+      toast.error("Erreur lors du rafraîchissement des données.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section>
-      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-md mb-5 sticky top-0 ">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center py-3 space-y-3 sm:space-y-0">
-          <div className="flex flex-wrap gap-2 w-full sm:w-auto sm:ml-8">
+
+      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-lg mb-5 sticky top-0 ">
+        <div className="flex flex-col justify-between sm:flex-row items-start sm:items-center py-3 space-y-3 sm:space-y-0">
+          <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto px-5">
             {user?.role === "ADMIN" && (
               <>
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center shadow-sm"
+                      className=" bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center shadow-sm"
                     >
-                      <Plus className="w-4 h-4 mr-1" />
+                      <Book className="w-4 h-4" />
                       Ajouter un cours
                     </Button>
                   </DialogTrigger>
@@ -587,8 +610,8 @@ export default function Dashboard() {
               <>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-grenn-700 transition-colors flex items-center shadow-sm">
-                      <GraduationCapIcon className="w-4 h-4" />
+                    <Button className=" bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center shadow-sm">
+                      <Calendar1Icon className="w-4 h-4" />
                       Programmer une semaine
                     </Button>
                   </DialogTrigger>
@@ -734,17 +757,40 @@ export default function Dashboard() {
                 </Dialog>
               </>
             )}
+            <Button
+              variant="outline"
+              onClick={() => setShowAll(!showAll)}
+              className="flex items-center gap-2"
+            >
+              {showAll ? (
+                <>
+                  <EyeOff className="w-4 h-4" />
+                  Voir filtré
+                </>
+              ) : (
+                <>
+                  <Eye className="w-4 h-4" />
+                  Voir tout
+                </>
+              )}
+            </Button>
+          </div>
+          <div className="flex items-center gap-4 px-5">
+            <Button onClick={handleReload} className="dark:bg-blue-600" disabled={isLoading}>
+              <RotateCcw className={`dark:text-white ${isLoading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
         </div>
       </header>
       <main className="overflow-y-auto pb-20 h-screen">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold">Planning de la semaine</h1>
+            <h1 className="text-2xl font-bold">Planning des cours</h1>
             <Button 
               variant="outline" 
               onClick={() => setShowAllPrograms(!showAllPrograms)}
               className="flex items-center gap-2 bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+              disabled={isLoading}
             >
               {showAllPrograms ? (
                 <>
@@ -759,11 +805,14 @@ export default function Dashboard() {
               )}
             </Button>
           </div>
-          {scheduleByDay && scheduleByDay.length > 0 ? (
+          {isLoading ? (
+            <ScheduleSkeleton />
+          ) : scheduleByDay && scheduleByDay.length > 0 ? (
             <ScheduleWeek 
               schedulesByWeek={showAllPrograms ? scheduleByDay : [scheduleByDay[0]]}
               selectedStage={selectedStage}
               selectedDepartment={selectedDepartment}
+              showAll={showAll}
             />
           ) : (
             <div className="text-gray-500">Chargement du planning...</div>
