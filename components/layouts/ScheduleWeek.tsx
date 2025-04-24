@@ -14,14 +14,13 @@ interface ScheduleWeekProps {
   showAll?: boolean;
 }
 
-// Fonction utilitaire pour formater l'heure
-const formatTime = (timeString: string) => {
+// Fonction utilitaire pour formater l'heure (ex: "07:00:00" -> "07H")
+const formatTime = (timeString: string): string => {
   if (!timeString) return "";
-  // Extraire les heures et minutes
-  const hours = timeString.split(":");
-  // Retourner le format "HHH"
+  const [hours] = timeString.split(":"); // on prend juste la première partie
   return `${hours}H`;
 };
+
 
 export default function ScheduleWeek({
   schedulesByWeek,
