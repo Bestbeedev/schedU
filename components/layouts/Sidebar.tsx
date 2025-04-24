@@ -5,17 +5,14 @@ import Link from "next/link";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import {
-  BookOpen,
   Calendar,
   ChartColumn,
   Users,
   UserRound
 } from "lucide-react";
-import { Button } from '../ui/button';
 
 type navigationTypes = {
   id:number;
@@ -78,15 +75,4 @@ export function NavigationMenuAdmin() {
   );
 }
 
-type IconNav = {
-    label: string;
-    icon: React.FC<any>;
-  };
-
-export function IconNavigation({label,icon}:IconNav) {
-  return (
-    <>
-
-    </>
-    )}
 

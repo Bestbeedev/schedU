@@ -48,7 +48,7 @@ export const AuthInitializer = () => {
     })
 
     return () => subscription.unsubscribe()
-  }, [setUser, setIsLoading, user])
+  }, [setUser, setIsLoading, user,supabase.auth])
 
   return null
 }

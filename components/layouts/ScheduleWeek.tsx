@@ -6,7 +6,6 @@ import { WeekSchedule } from "@/types/tables";
 import { Delete, FilePenLine, GraduationCap, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuthStore } from "@/stores/auth";
-import { useFiltersStore } from "@/stores/filters";
 
 interface ScheduleWeekProps {
   schedulesByWeek: WeekSchedule[];
@@ -19,7 +18,7 @@ interface ScheduleWeekProps {
 const formatTime = (timeString: string) => {
   if (!timeString) return "";
   // Extraire les heures et minutes
-  const [hours, minutes] = timeString.split(":");
+  const hours = timeString.split(":");
   // Retourner le format "HHH"
   return `${hours}H`;
 };

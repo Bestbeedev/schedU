@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
-import { CalendarIcon, ChevronLeft, ChevronRight, GraduationCapIcon, Plus, ChevronDown, ChevronUp, RotateCcw, Eye, EyeOff, Book, Calendar1Icon } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp, RotateCcw, Eye, EyeOff, Book, Calendar1Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { scheduleSchema, weekSchema } from "@/zod/validation";
@@ -21,7 +21,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -35,7 +34,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -52,7 +50,6 @@ import ScheduleWeek from "@/components/layouts/ScheduleWeek";
 import { getSchedulesByWeek } from "@/lib/schedule";
 import { useFiltersStore } from "@/stores/filters";
 import { Skeleton } from "@/components/ui/skeleton";
-import Header from "@/components/layouts/Header";
 
 const ScheduleSkeleton = () => {
   return (
@@ -157,7 +154,7 @@ export default function Dashboard() {
     fetchRooms();
     fetchWeeks();
     fetchStages();
-  }, []);
+  }, [supabase]);
 
   async function onSubmitWeeks(values: z.infer<typeof weekSchema>) {
     setIsLoading(true);

@@ -69,7 +69,7 @@ export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
       }
     };
     fetchDepartments();
-  }, []);
+  }, [supabase]);
 
   return (
     <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={disabled}>
@@ -105,7 +105,7 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
       }
     };
     fetchNiveau();
-  }, []);
+  }, [supabase]);
 
   return (
     <Select value={selectedStage} onValueChange={setSelectedStage} disabled={disabled}>
@@ -126,13 +126,12 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
   );
 }
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback} from "@/components/ui/avatar";
 
 export function AvatarUser() {
   const { user } = useAuthStore();
   return (
     <Avatar className="">
-      {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
       <AvatarFallback className="dark:bg-red-600 text-neutral-50 bg-blue-600">
         {user?.email.charAt(0).toUpperCase()}
       </AvatarFallback>
