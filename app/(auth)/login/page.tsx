@@ -166,7 +166,7 @@ export default function LoginPage() {
         <div className="text-sm dark:text-neutral-300 text-neutral-700">
           Pas Déjà un compte ?{" "}
           <Link href={'/signup'} className="dark:text-neutral-200 cursor-pointer dark:hover:text-green-500 hover:text-red-500 underline">
-            S'inscrire
+          {"S'inscrire"}
           </Link>
         </div>
       </CardFooter>

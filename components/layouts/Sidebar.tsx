@@ -15,10 +15,10 @@ import {
 } from "lucide-react";
 
 type navigationTypes = {
-  id:number;
+  id: number;
   label: string;
   href: string;
-  icon: React.FC<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 };
 
 
@@ -61,7 +61,6 @@ export function NavigationMenuAdmin() {
                     dark:text-neutral-100 transition-colors`}
                 >
                   <item.icon
-                    size={20}
                     className={`size-5 ${isActive ? "text-white" : ""}`}
                   />
                   <span>{item.label}</span>
