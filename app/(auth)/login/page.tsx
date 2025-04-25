@@ -71,7 +71,7 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignUp = async () => {
-    const auth_calback_url=`http://localhost:3000/auth/callback`
+    const auth_calback_url=`http://schedu-sonou.vercel.app/auth/callback`
     const { data,error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options:{
