@@ -43,7 +43,7 @@ export default function Header() {
     </section>
 
     {/* Filtres - Masqués sur mobile */}
-    <section className="hidden sm:flex items-center gap-2 flex-1 justify-center">
+    <section className="hidden md:flex items-center gap-2 flex-1 justify-center">
       <SelectFiliere disabled={showAll} />
       <SelectGrade disabled={showAll} />
     </section>
@@ -64,7 +64,7 @@ export default function Header() {
   </div>
 
   {/* Filtres affichés en dessous sur mobile */}
-  <div className="flex flex-row items-center justify-between mx-auto gap-2 mt-3 sm:hidden">
+  <div className="flex flex-row items-center justify-between mx-auto gap-2 mt-3 md:hidden">
     <SelectFiliere disabled={showAll} />
     <SelectGrade disabled={showAll} />
   </div>

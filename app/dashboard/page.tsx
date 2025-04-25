@@ -60,6 +60,8 @@ import { getSchedulesByWeek } from "@/lib/schedule";
 import { useFiltersStore } from "@/stores/filters";
 import { Skeleton } from "@/components/ui/skeleton";
 
+
+
 const ScheduleSkeleton = () => {
   return (
     <div className="space-y-4">
@@ -71,6 +73,10 @@ const ScheduleSkeleton = () => {
     </div>
   );
 };
+
+
+
+
 
 export default function Dashboard() {
   const { user } = useAuthStore();
@@ -110,7 +116,6 @@ export default function Dashboard() {
   const [stages, setStages] = useState<Filiere[]>([]);
   const [rooms, setRooms] = useState<Filiere[]>([]);
   const [weeks, setWeeks] = useState<Weeks[]>([]);
-  // const [selectedStage,setSelectedStage]=useState<string>("")
   const supabase = createClient();
 
   useEffect(() => {
@@ -164,6 +169,15 @@ export default function Dashboard() {
     fetchWeeks();
     fetchStages();
   }, [supabase]);
+
+  const RefetchWeeks = async () => {
+    const { data, error } = await supabase.from("weeks").select("*");
+    if (error) {
+      console.error("Error fetching weeks:", error);
+    } else {
+      setWeeks(data);
+    }
+  };
 
   async function onSubmitWeeks(values: z.infer<typeof weekSchema>) {
     setIsLoading(true);
@@ -224,7 +238,7 @@ export default function Dashboard() {
               <>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className=" bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center shadow-sm">
+                    <Button onClick={RefetchWeeks} className=" bg-blue-500 text-white max-sm:w-full hover:bg-blue-600 transition-colors flex items-center shadow-sm">
                       <Book className="w-4 h-4" />
                       Ajouter un cours
                     </Button>
@@ -628,7 +642,7 @@ export default function Dashboard() {
               <>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className=" bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center shadow-sm">
+                    <Button className=" bg-green-600 text-white max-sm:w-full hover:bg-green-700 transition-colors flex items-center shadow-sm">
                       <Calendar1Icon className="w-4 h-4" />
                       Programmer une semaine
                     </Button>
@@ -782,7 +796,7 @@ export default function Dashboard() {
             <Button
               variant="outline"
               onClick={() => setShowAll(!showAll)}
-              className="flex items-center gap-2"
+              className="flex max-sm:w-full items-center gap-2"
             >
               {showAll ? (
                 <>
@@ -797,10 +811,21 @@ export default function Dashboard() {
               )}
             </Button>
           </div>
-          <div className="flex items-center gap-4 px-5">
+          <div className="flex items-center max-sm:mx-auto max-sm:justify-center gap-4 px-5">
+            
             <Button
               onClick={handleReload}
-              className="bg-blue-600 hover:bg-blue-500"
+              className="bg-blue-600 w-full text-white sm:hidden hover:bg-blue-500"
+              disabled={isLoading}
+            >
+              <RotateCcw
+                className={`text-white   ${isLoading ? "animate-spin" : ""}`}
+              /> {isLoading?"Rechargement en cours":"Actualiser la page"}
+            </Button>
+
+            <Button
+              onClick={handleReload}
+              className="bg-blue-600 max-sm:hidden  hover:bg-blue-500"
               disabled={isLoading}
             >
               <RotateCcw
@@ -840,9 +865,6 @@ export default function Dashboard() {
 
           {/* Contenu */}
           <section className="overflow-y-auto max-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))]">
-
-
-          
           {isLoading ? (
             <ScheduleSkeleton />
           ) : scheduleByDay && scheduleByDay.length > 0 ? (
