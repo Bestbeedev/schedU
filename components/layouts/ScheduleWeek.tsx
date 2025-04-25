@@ -112,11 +112,11 @@ export default function ScheduleWeek({
                 </h2>
                 {user && user?.role === "ADMIN" && !showAll && (selectedStage || selectedDepartment) && (
                   <div className="flex dark:text-white text-sm gap-2 items-center">
-                    <Button className="dark:bg-red-500">
-                      <FilePenLine className="dark:text-white" />
+                    <Button className="dark:bg-green-600 bg-green-600">
+                      <FilePenLine className="text-white" />
                     </Button>
-                    <Button className="dark:bg-green-600">
-                      <Delete className="dark:text-white" />
+                    <Button className="dark:bg-red-600 bg-red-600">
+                      <Delete className="text-white" />
                     </Button>
                   </div>
                 )}
