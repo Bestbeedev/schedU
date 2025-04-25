@@ -21,7 +21,6 @@ const formatTime = (timeString: string): string => {
   return `${hours}H`;
 };
 
-
 export default function ScheduleWeek({
   schedulesByWeek,
   selectedStage,
@@ -99,27 +98,33 @@ export default function ScheduleWeek({
             className="border shadow-xl dark:bg-neutral-900/50 dark:border-neutral-700 border-neutral-200"
           >
             <CardContent className="p-6 overflow-x-auto w-full ">
-              <div className="mb-6 p-4 rounded-lg items-center flex justify-between bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
-                <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  Semaine du{" "}
-                  {format(new Date(week.start_date), "dd MMMM yyyy", {
-                    locale: fr,
-                  })}{" "}
-                  au{" "}
-                  {format(new Date(week.end_date), "dd MMMM yyyy", {
-                    locale: fr,
-                  })}
-                </h2>
-                {user && user?.role === "ADMIN" && !showAll && (selectedStage || selectedDepartment) && (
-                  <div className="flex dark:text-white text-sm gap-2 items-center">
-                    <Button className="dark:bg-green-600 bg-green-600">
-                      <FilePenLine className="text-white" />
-                    </Button>
-                    <Button className="dark:bg-red-600 bg-red-600">
-                      <Delete className="text-white" />
-                    </Button>
-                  </div>
-                )}
+              <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
+                <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
+                  <h2 className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    Semaine du{" "}
+                    {format(new Date(week.start_date), "dd MMMM yyyy", {
+                      locale: fr,
+                    })}{" "}
+                    au{" "}
+                    {format(new Date(week.end_date), "dd MMMM yyyy", {
+                      locale: fr,
+                    })}
+                  </h2>
+
+                  {user &&
+                    user?.role === "ADMIN" &&
+                    !showAll &&
+                    (selectedStage || selectedDepartment) && (
+                      <div className="flex gap-2 text-sm">
+                        <Button className="dark:bg-green-600 bg-green-600">
+                          <FilePenLine className="text-white" />
+                        </Button>
+                        <Button className="dark:bg-red-600 bg-red-600">
+                          <Delete className="text-white" />
+                        </Button>
+                      </div>
+                    )}
+                </div>
               </div>
 
               {Object.values(groupedSchedules).map((group, index) => (

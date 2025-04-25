@@ -28,7 +28,7 @@ export default function AdminLayout({
           <aside className="max-w-sm py-6 px-4 border-r hidden" >
             <Sidebar/>
           </aside>
-          <main className="flex-1  overflow-y-hidden bg-neutral-50 p-6 dark:dark:bg-neutral-800">{children}</main>
+          <main className="flex-1 overflow-y-hidden bg-neutral-50 p-6 max-md:px-4 dark:dark:bg-neutral-800">{children}</main>
         </section>
       </section>
   );

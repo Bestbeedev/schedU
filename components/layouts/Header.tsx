@@ -31,26 +31,45 @@ export default function Header() {
   };
 
   return (
-    <header className="flex bg-white dark:bg-neutral-800 sticky top-0 justify-between px-6 py-4 border-t border border-b">
-      <section className="flex gap-1 items-center">
-        <Calendar className="size-5" />
-        <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
-        <Badge variant={'outline'} className="text-sm">
-          v.1.0.0
-        </Badge>
-      </section>
-      <section className="flex gap-2">
-        <SelectFiliere disabled={showAll} />
-        <SelectGrade disabled={showAll} />
-      </section>
-      <section className="flex gap-3">
-        <ModeToggle />
-        <AvatarUser />
-        <Button variant={"outline"} className="cursor-pointer" onClick={handleLogout}>
-          <LogOut /> Logout
-        </Button>
-      </section>
-    </header>
+<header className="bg-white dark:bg-neutral-800 sticky top-0 border-b px-4 py-3 md:px-6 md:py-4 z-50">
+  <div className="flex flex-wrap items-center justify-between gap-4">
+    {/* Logo & Titre */}
+    <section className="flex items-center gap-2">
+      <Calendar className="size-5" />
+      <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
+      <Badge variant="outline" className="text-sm hidden sm:inline">
+        v.1.0.0
+      </Badge>
+    </section>
+
+    {/* Filtres - Masqués sur mobile */}
+    <section className="hidden sm:flex items-center gap-2 flex-1 justify-center">
+      <SelectFiliere disabled={showAll} />
+      <SelectGrade disabled={showAll} />
+    </section>
+
+    {/* Actions */}
+    <section className="flex items-center gap-2 sm:gap-3">
+      <ModeToggle />
+      <AvatarUser />
+      <Button
+        variant="outline"
+        className="cursor-pointer text-sm px-2 sm:px-4"
+        onClick={handleLogout}
+      >
+        <LogOut className=" h-4 w-4" />
+        <span className="hidden sm:inline">Logout</span>
+      </Button>
+    </section>
+  </div>
+
+  {/* Filtres affichés en dessous sur mobile */}
+  <div className="flex flex-row items-center justify-between mx-auto gap-2 mt-3 sm:hidden">
+    <SelectFiliere disabled={showAll} />
+    <SelectGrade disabled={showAll} />
+  </div>
+</header>
+
   );
 }
 

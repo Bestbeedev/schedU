@@ -1,7 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
-import { CalendarIcon, ChevronDown, ChevronUp, RotateCcw, Eye, EyeOff, Book, Calendar1Icon } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+  Eye,
+  EyeOff,
+  Book,
+  Calendar1Icon,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { scheduleSchema, weekSchema } from "@/zod/validation";
@@ -149,7 +158,7 @@ export default function Dashboard() {
         setStages(data);
       }
     };
-    
+
     fetchDepartments();
     fetchRooms();
     fetchWeeks();
@@ -208,17 +217,14 @@ export default function Dashboard() {
 
   return (
     <section>
-
-      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-lg mb-5 sticky top-0 ">
+      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-lg mb-5  ">
         <div className="flex flex-col justify-between sm:flex-row items-start sm:items-center py-3 space-y-3 sm:space-y-0">
           <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto px-5">
             {user?.role === "ADMIN" && (
               <>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button
-                      className=" bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center shadow-sm"
-                    >
+                    <Button className=" bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center shadow-sm">
                       <Book className="w-4 h-4" />
                       Ajouter un cours
                     </Button>
@@ -360,7 +366,22 @@ export default function Dashboard() {
                                           value={week.id}
                                           key={week.id}
                                         >
-                                          Du {format(new Date(week.start_date), "EEEE d MMMM", { locale: fr }).replace(/\b\w/g, c => c.toUpperCase())} au {format(new Date(week.end_date), "EEEE d MMMM yyyy", { locale: fr }).replace(/\b\w/g, c => c.toUpperCase())}
+                                          Du{" "}
+                                          {format(
+                                            new Date(week.start_date),
+                                            "EEEE d MMMM",
+                                            { locale: fr }
+                                          ).replace(/\b\w/g, (c) =>
+                                            c.toUpperCase()
+                                          )}{" "}
+                                          au{" "}
+                                          {format(
+                                            new Date(week.end_date),
+                                            "EEEE d MMMM yyyy",
+                                            { locale: fr }
+                                          ).replace(/\b\w/g, (c) =>
+                                            c.toUpperCase()
+                                          )}
                                         </SelectItem>
                                       ))}
                                     </SelectGroup>
@@ -602,7 +623,7 @@ export default function Dashboard() {
                 </Dialog>
               </>
             )}
-        
+
             {user?.role === "ADMIN" && (
               <>
                 <Dialog>
@@ -636,7 +657,7 @@ export default function Dashboard() {
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
                                 Date debut de la semaine
                               </FormLabel>
-                            
+
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
@@ -648,7 +669,9 @@ export default function Dashboard() {
                                       )}
                                     >
                                       {field.value ? (
-                                        format(field.value, "PPP", { locale: fr })
+                                        format(field.value, "PPP", {
+                                          locale: fr,
+                                        })
                                       ) : (
                                         <span>
                                           Choissisez la fin de la date
@@ -701,7 +724,9 @@ export default function Dashboard() {
                                       )}
                                     >
                                       {field.value ? (
-                                        format(field.value, "PPP", { locale: fr })
+                                        format(field.value, "PPP", {
+                                          locale: fr,
+                                        })
                                       ) : (
                                         <span>
                                           Choissisez la fin de la date
@@ -773,20 +798,30 @@ export default function Dashboard() {
             </Button>
           </div>
           <div className="flex items-center gap-4 px-5">
-            <Button onClick={handleReload} className="bg-blue-600 hover:bg-blue-500" disabled={isLoading}>
-              <RotateCcw className={`text-white ${isLoading ? 'animate-spin' : ''}`} />
+            <Button
+              onClick={handleReload}
+              className="bg-blue-600 hover:bg-blue-500"
+              disabled={isLoading}
+            >
+              <RotateCcw
+                className={`text-white ${isLoading ? "animate-spin" : ""}`}
+              />
             </Button>
           </div>
         </div>
       </header>
-      <main className="overflow-y-auto pb-20 h-screen">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold">Planning des cours</h1>
-            <Button 
-              variant="outline" 
+      <main className="h-screen">
+        <div className="">
+          {/* Header */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold">
+              Planning des cours
+            </h1>
+
+            <Button
+              variant="outline"
               onClick={() => setShowAllPrograms(!showAllPrograms)}
-              className="flex items-center gap-2 bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+              className="flex items-center gap-2 bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors w-full sm:w-auto"
               disabled={isLoading}
             >
               {showAllPrograms ? (
@@ -802,18 +837,26 @@ export default function Dashboard() {
               )}
             </Button>
           </div>
+
+          {/* Contenu */}
+          <section className="overflow-y-auto max-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))]">
+
+
+          
           {isLoading ? (
             <ScheduleSkeleton />
           ) : scheduleByDay && scheduleByDay.length > 0 ? (
-            <ScheduleWeek 
-              schedulesByWeek={showAllPrograms ? scheduleByDay : [scheduleByDay[0]]}
+            <ScheduleWeek
+              schedulesByWeek={
+                showAllPrograms ? scheduleByDay : [scheduleByDay[0]]
+              }
               selectedStage={selectedStage}
               selectedDepartment={selectedDepartment}
               showAll={showAll}
             />
           ) : (
             <ScheduleSkeleton />
-          )}
+          )}</section>
         </div>
       </main>
     </section>
