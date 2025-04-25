@@ -1,13 +1,15 @@
 "use client";
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "@/zod/validation";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import google from "@/public/images/google.svg";
 import {
   Form,
   FormControl,
@@ -26,14 +28,14 @@ import {
 import { z } from "zod";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
-import {createClient} from "@/lib/client"
+import { createClient } from "@/lib/client";
 import Link from "next/link";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = React.useState(false);
   const { setUser, setIsLoading: setAuthLoading } = useAuthStore();
-const  supabase=createClient()
-  const router=useRouter()
+  const supabase = createClient();
+  const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -62,7 +64,7 @@ const  supabase=createClient()
           role: data.user.email === "josueaoga0@gmail.com" ? "ADMIN" : "USER",
         });
         toast.success("Inscription réussie ! Vérifiez votre email.");
-        return router.push("/login")
+        return router.push("/login");
       }
     } catch (err) {
       console.error(err);
@@ -83,7 +85,7 @@ const  supabase=createClient()
   };
 
   return (
-    <Card className="w-full shadow-none h-fit text-neutral-50 dark:bg-neutral-800 border dark:border-neutral-700 dark:text-white p-8 rounded-xl max-w-md mx-auto my-auto">
+    <Card className="w-full max-w-sm sm:max-w-md h-fit  justify-center my-auto mx-auto  p-6 rounded-xl shadow-none border dark:bg-neutral-800 dark:border-neutral-700 text-neutral-50 dark:text-white">
       <CardHeader className="space-y-1 text-center">
         <h2 className="text-2xl font-semibold dark:border-neutral-100 tracking-tight">
           Créer un compte
@@ -157,9 +159,10 @@ const  supabase=createClient()
             <Button
               type="button"
               variant="outline"
-              className="w-full dark:border-neutral-700 dark:text-neutral-100"
+              className="w-full dark:border-neutral-700 dark:text-neutral-100 flex items-center justify-center gap-2"
               onClick={handleGoogleSignUp}
             >
+              <Image src={google} alt="google icon" className="h-6 w-6" />
               Continuer avec Google
             </Button>
           </form>
@@ -168,7 +171,10 @@ const  supabase=createClient()
       <CardFooter className="flex justify-center">
         <div className="text-sm dark:text-neutral-300 text-neutral-700">
           Pas encore un compte ?{" "}
-          <Link href={'/login'} className="dark:text-neutral-200 cursor-pointer dark:hover:text-green-500 hover:text-red-500 underline">
+          <Link
+            href={"/login"}
+            className="dark:text-neutral-200 cursor-pointer dark:hover:text-green-500 hover:text-red-500 underline"
+          >
             Se connecter
           </Link>
         </div>

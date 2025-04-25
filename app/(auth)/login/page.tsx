@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "@/zod/validation";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import google from "@/public/images/google.svg";
 import {
   Form,
   FormControl,
@@ -92,7 +94,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full shadow-none h-fit text-neutral-50 dark:bg-neutral-800 border dark:border-neutral-700 dark:text-white p-8 rounded-xl max-w-md mx-auto my-auto">
+    <Card className="w-full max-w-sm sm:max-w-md h-fit  justify-center my-auto mx-auto  p-6 rounded-xl shadow-none border dark:bg-neutral-800 dark:border-neutral-700 text-neutral-50 dark:text-white">
       <CardHeader className="space-y-1 text-center">
         <h2 className="text-2xl font-semibold dark:border-neutral-100 tracking-tight">
           Se connecter
@@ -166,9 +168,14 @@ export default function LoginPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full dark:border-neutral-700 dark:text-neutral-100"
+              className="w-full dark:border-neutral-700 dark:text-neutral-100 flex items-center justify-center gap-2"
               onClick={handleGoogleSignUp}
             >
+               <Image
+            src={google}
+            alt="google icon"
+            className="h-6 w-6"
+          />
               Continuer avec Google
             </Button>
           </form>
