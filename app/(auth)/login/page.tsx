@@ -23,14 +23,14 @@ import {
 import { z } from "zod";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
-import {createClient} from "@/lib/client"
+import { createClient } from "@/lib/client";
 import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = React.useState(false);
   const { setUser, setIsLoading: setAuthLoading } = useAuthStore();
-  const router=useRouter()
+  const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -38,7 +38,7 @@ export default function LoginPage() {
       password: "",
     },
   });
-  const supabase = createClient()
+  const supabase = createClient();
   async function onSubmit(values: z.infer<typeof authSchema>) {
     setIsLoading(true);
     setAuthLoading(true);
@@ -47,7 +47,7 @@ export default function LoginPage() {
         email: values.email,
         password: values.password,
       });
-      console.log("🟢 SESSION after login:", data.session) // ✅ doit exister
+      console.log("🟢 SESSION after login:", data.session); // ✅ doit exister
       if (error) {
         toast.error(error.message);
         return;
@@ -58,7 +58,7 @@ export default function LoginPage() {
           email: data.user.email || "",
           role: data.user.email === "josueaoga0@gmail.com" ? "ADMIN" : "USER",
         });
-        await router.push("/dashboard")
+        await router.push("/dashboard");
         return toast.success("Connexion réussie !");
       }
     } catch (err) {
@@ -71,12 +71,13 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignUp = async () => {
-    const auth_calback_url = `https://schedu-sonou.vercel.app/auth/callback`
-    const { data,error } = await supabase.auth.signInWithOAuth({
+    const authCallbackUrl = "http://localhost:3000/auth/callback";
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options:{
-        redirectTo:auth_calback_url
-      }
+      options: {
+        redirectTo: authCallbackUrl,
+      },
     });
     if (error) {
       toast.error("Erreur avec Google : " + error.message);
@@ -84,9 +85,10 @@ export default function LoginPage() {
     if (data?.url) {
       redirect(data.url);
     } else {
-      toast.error("Impossible de rediriger : URL de redirection non disponible.");
+      toast.error(
+        "Impossible de rediriger : URL de redirection non disponible."
+      );
     }
-    
   };
 
   return (
@@ -175,8 +177,11 @@ export default function LoginPage() {
       <CardFooter className="flex justify-center">
         <div className="text-sm dark:text-neutral-300 text-neutral-700">
           Pas Déjà un compte ?{" "}
-          <Link href={'/signup'} className="dark:text-neutral-200 cursor-pointer dark:hover:text-green-500 hover:text-red-500 underline">
-          {"S'inscrire"}
+          <Link
+            href={"/signup"}
+            className="dark:text-neutral-200 cursor-pointer dark:hover:text-green-500 hover:text-red-500 underline"
+          >
+            {"S'inscrire"}
           </Link>
         </div>
       </CardFooter>
