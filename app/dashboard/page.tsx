@@ -773,8 +773,8 @@ export default function Dashboard() {
             </Button>
           </div>
           <div className="flex items-center gap-4 px-5">
-            <Button onClick={handleReload} className="dark:bg-blue-600" disabled={isLoading}>
-              <RotateCcw className={`dark:text-white ${isLoading ? 'animate-spin' : ''}`} />
+            <Button onClick={handleReload} className="bg-blue-600 hover:bg-blue-500" disabled={isLoading}>
+              <RotateCcw className={`text-white ${isLoading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
@@ -812,7 +812,7 @@ export default function Dashboard() {
               showAll={showAll}
             />
           ) : (
-            <div className="text-gray-500">Chargement du planning...</div>
+            <ScheduleSkeleton />
           )}
         </div>
       </main>
