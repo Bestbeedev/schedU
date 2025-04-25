@@ -21,7 +21,10 @@ export default function RootLayout({
         >
           <AuthInitializer />
           <NetworkStatusListener/>
-          <Toaster position="top-center"/>
+          <Toaster 
+          closeButton 
+          theme="light"
+          position="top-center"/>
           {children}
         </ThemeProvider>
       </body>
