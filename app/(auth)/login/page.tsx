@@ -63,7 +63,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Erreur lors de la connexio n.");
+      toast.error("Erreur lors de la connexion");
     } finally {
       setIsLoading(false);
       setAuthLoading(false);
@@ -71,7 +71,7 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignUp = async () => {
-    const auth_calback_url=`http://schedu-sonou.vercel.app/auth/callback`
+    const auth_calback_url = `https://schedu-sonou.vercel.app/auth/callback`
     const { data,error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options:{
@@ -86,6 +86,7 @@ export default function LoginPage() {
     } else {
       toast.error("Impossible de rediriger : URL de redirection non disponible.");
     }
+    
   };
 
   return (

@@ -24,7 +24,7 @@ export default function Hero() {
       <div>
         <div className="space-y-6 max-w-3xl mx-auto text-center">
           <h1
-            className="text-3xl sm:text-5xl lg:text-6xl bg-clip-text text-transparent font-extrabold leading-tight"
+            className="text-3xl pb-2 sm:text-5xl lg:text-6xl bg-clip-text text-transparent font-extrabold "
             style={{
               backgroundImage:
                 "linear-gradient(179.1deg, #FFFFFF 0.77%, rgba(255, 255, 255, 0) 182.09%)",
@@ -33,7 +33,7 @@ export default function Hero() {
             Consultez votre programme de cours hebdomadaire en ligne
           </h1>
   
-          <p className="max-w-xl mx-auto text-gray-300 text-base sm:text-lg">
+          <p className="max-w-xl text-sm mx-auto text-gray-300   sm:text-lg">
             schedU centralise votre emploi du temps : fini les mails perdus ou les messages WhatsApp. Retrouvez vos cours, horaires, salles et enseignants à tout moment, sur tous vos appareils.
           </p>
   
