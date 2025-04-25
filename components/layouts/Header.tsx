@@ -46,7 +46,7 @@ export default function Header() {
       <section className="flex gap-3">
         <ModeToggle />
         <AvatarUser />
-        <Button className="cursor-pointer" onClick={handleLogout}>
+        <Button variant={"outline"} className="cursor-pointer" onClick={handleLogout}>
           <LogOut /> Logout
         </Button>
       </section>

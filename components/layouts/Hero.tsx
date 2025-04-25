@@ -1,11 +1,17 @@
+"use client"
 import GradientWrapper from "@/components/layouts/GradientWrapper";
 import Image from "next/image";
 import HeroImg from "@/public/images/hero.svg";
 import LayoutEffect from "@/components/layouts/LayoutEffect";
 import { Button } from "../ui/button";
 import {  ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+    const router=useRouter()
+    const handleDashboard=()=>{
+        router.push("/dashboard")
+    }
   return (
     <div className="custom-screen w-screen py-28">
       <LayoutEffect
@@ -31,7 +37,7 @@ export default function Hero() {
             Retrouvez rapidement vos cours, horaires, salles et enseignants depuis votre ordinateur ou smartphone.
             </p>
             <div className="flex justify-center font-medium text-sm">
-              <Button variant={"outline"}>Voir le planning hebdomadaire<ChevronRight/></Button>
+              <Button onClick={handleDashboard} variant={"outline"}>Voir le planning hebdomadaire<ChevronRight/></Button>
             </div>
           </div>
           <GradientWrapper
