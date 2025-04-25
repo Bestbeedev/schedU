@@ -21,13 +21,16 @@ export default function Header() {
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
+  
     if (error) {
+      toast.error(`Erreur de déconnexion : ${error.message}`);
       console.error("❌ Erreur de déconnexion :", error.message);
       return;
     }
+  
     useAuthStore.getState().setUser(null);
-    toast.success("Deconnexion reussie");
-    router.push("/login");
+    await router.push("/login"); // ⬅️ attendre la redirection
+    toast.success("Déconnexion réussie"); // ✅ après le push
   };
 
   return (

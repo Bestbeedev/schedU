@@ -9,7 +9,6 @@ export const AuthInitializer = () => {
 
   useEffect(() => {
     setIsLoading(true)
-
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       console.log("SESSION DATA Initializer:", session)

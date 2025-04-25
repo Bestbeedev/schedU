@@ -21,6 +21,7 @@ export default function AdminLayout({
   }, [user, isLoading, router])
 
   if (isLoading) return <Loading/>
+  
   return (
       <section className="dark:bg-neutral-900 overflow-y-hidden  bg-white justify-center flex flex-col border dark:border-neutral-700 shadow-xl border-neutral-200 min-h-screen w-full overflow-hidden">
         <Header />

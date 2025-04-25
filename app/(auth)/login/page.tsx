@@ -24,7 +24,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
 import {createClient} from "@/lib/client"
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -58,12 +58,12 @@ export default function LoginPage() {
           email: data.user.email || "",
           role: data.user.email === "josueaoga0@gmail.com" ? "ADMIN" : "USER",
         });
-        toast.success("Inscription réussie ! Vérifiez votre email.");
-        return router.push("/dashboard")
+        await router.push("/dashboard")
+        return toast.success("Connexion réussie !");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Erreur lors de l'inscription.");
+      toast.error("Erreur lors de la connexio n.");
     } finally {
       setIsLoading(false);
       setAuthLoading(false);
@@ -71,11 +71,20 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignUp = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const auth_calback_url=`http://localhost:3000/auth/callback`
+    const { data,error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options:{
+        redirectTo:auth_calback_url
+      }
     });
     if (error) {
       toast.error("Erreur avec Google : " + error.message);
+    }
+    if (data?.url) {
+      redirect(data.url);
+    } else {
+      toast.error("Impossible de rediriger : URL de redirection non disponible.");
     }
   };
 
