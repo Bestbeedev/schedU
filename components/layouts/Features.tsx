@@ -1,5 +1,6 @@
 import { Calendar, Filter, SunIcon } from "lucide-react"
-
+import Image from "next/image"
+import schedu from "@/public/images/schedu.png"
 
 const features = [
   {
@@ -32,7 +33,7 @@ export default function Features() {
               Fonctionnalités clés de notre plateforme
               </p>
               <p className="mt-6 text-sm text-neutral-300">
-              Explorez des features conçues pour améliorer votre expérience étudiante : visualisez votre programme de cours semaine par semaine, filtrez les emplois du temps selon votre filière et votre niveau, et personnalisez votre interface avec un mode clair ou sombre. Tout est pensé pour vous offrir confort, simplicité et efficacité.
+              Découvrez des fonctionnalités pensées pour faciliter votre vie étudiante : consultez votre programme, filtrez-le selon votre parcours, et personnalisez votre interface pour un confort optimal.
               </p>
               <dl className="mt-10 max-w-xl space-y-8 text-sm text-neutral-50 lg:max-w-none">
                 {features.map((feature) => (
@@ -47,11 +48,11 @@ export default function Features() {
               </dl>
             </div>
           </div>
-          <img
-            alt="Product screenshot"
-            src="https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
-            width={2432}
-            height={1442}
+          <Image
+           width={2432}
+           height={1842}
+            src={schedu}
+            alt="Aperçu du dashboard features schedu"
             className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
           />
         </div>

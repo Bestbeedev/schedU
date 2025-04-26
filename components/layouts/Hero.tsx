@@ -5,13 +5,9 @@ import schedu from "@/public/images/schedu.png";
 import LayoutEffect from "@/components/layouts/LayoutEffect";
 import { Button } from "../ui/button";
 import {  ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Hero() {
-    const router=useRouter()
-    const handleDashboard=()=>{
-        router.push("/dashboard")
-    }
   return (
     <div className="custom-screen w-full px-4 py-20 sm:py-28">
     <LayoutEffect
@@ -38,13 +34,14 @@ export default function Hero() {
           </p>
   
           <div className="flex justify-center">
+            <Link href={"/dashboard"}>
             <Button
-              onClick={handleDashboard}
               variant={"outline"}
               className="flex items-center gap-1"
             >
               Voir le planning hebdomadaire <ChevronRight />
             </Button>
+            </Link>
           </div>
         </div>
   

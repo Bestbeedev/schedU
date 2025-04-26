@@ -839,7 +839,7 @@ export default function Dashboard() {
               )}
             </Button>
           </div>
-          <div className="flex items-center max-sm:mx-auto max-sm:justify-center gap-4 px-5">
+          <div className="flex items-center max-sm:mx-auto max-sm:w-full max-sm:justify-center gap-4 px-5">
             <Button
               onClick={handleReload}
               className="bg-blue-600 w-full text-white sm:hidden hover:bg-blue-500"

@@ -39,10 +39,12 @@ export default function Header() {
     {/* Logo & Titre */}
     <section className="flex items-center gap-2">
       <Calendar className="size-5" />
+      <Link className="cursor-pointer flex items-center gap-2" href={'/'}>
       <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
       <Badge variant="outline" className="text-sm hidden sm:inline">
         v.1.0.0
       </Badge>
+      </Link>
     </section>
 
     {/* Filtres - Masqués sur mobile */}
@@ -175,6 +177,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Filiere } from "@/types/tables";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
