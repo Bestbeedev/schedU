@@ -12,7 +12,7 @@ export const authSchema = z.object({
 
 
 export const scheduleSchema = z.object({
-  department_id: z.string().nonempty({ message: "La filiere est requise" }),
+  department_id: z.array(z.string()).min(1, { message: "Choisissez au moins une filière" }),
   room_id: z.string().nonempty({ message: "La salle de cours est requise" }),
   week_id: z.string().nonempty({ message: "La semaine de cours est requise" }),
   stage_id: z.string().nonempty({ message: "Le niveau de licence est requise" }),

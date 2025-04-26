@@ -30,6 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -59,8 +60,7 @@ import ScheduleWeek from "@/components/layouts/ScheduleWeek";
 import { getSchedulesByWeek } from "@/lib/schedule";
 import { useFiltersStore } from "@/stores/filters";
 import { Skeleton } from "@/components/ui/skeleton";
-
-
+import { Checkbox } from "@/components/ui/checkbox";
 
 const ScheduleSkeleton = () => {
   return (
@@ -74,10 +74,6 @@ const ScheduleSkeleton = () => {
   );
 };
 
-
-
-
-
 export default function Dashboard() {
   const { user } = useAuthStore();
   const { selectedStage, selectedDepartment } = useFiltersStore();
@@ -89,14 +85,14 @@ export default function Dashboard() {
   const form = useForm<z.infer<typeof scheduleSchema>>({
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
-      department_id: "",
+      department_id: [],
       room_id: "",
       week_id: "",
       stage_id: "",
       day_of_weeks_start: "Lundi",
       day_of_weeks_end: "Vendredi",
-      start_time: "",
-      end_time: "",
+      start_time: "08:00",
+      end_time: "13:00",
       course_name: "",
       teacher: "",
       tp: "",
@@ -197,23 +193,35 @@ export default function Dashboard() {
     }
   }
 
+
   async function onSubmit(values: z.infer<typeof scheduleSchema>) {
     setIsLoading(true);
+  
     try {
-      const { error } = await supabase.from("schedules").insert(values);
+      const { department_id, ...otherFields } = values;
+  
+      const insertData = department_id.map((depId) => ({
+        department_id: depId,
+        ...otherFields,
+      }));
+  
+      const { error } = await supabase.from("schedules").insert(insertData);
+  
       if (error) {
         console.error("Erreur lors de l'insertion :", error.message);
         toast.error("Erreur lors de l'insertion des données.");
         return;
       }
+  
+      toast.success("Planning enregistré avec succès !");
     } catch (error) {
       console.error("Erreur lors de l'insertion :", error);
       toast.error("Erreur lors de l'insertion des données.");
     } finally {
       setIsLoading(false);
-      toast.success("Planning enregistré avec succès !");
     }
   }
+  
 
   const handleReload = async () => {
     setIsLoading(true);
@@ -238,7 +246,10 @@ export default function Dashboard() {
               <>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button onClick={RefetchWeeks} className=" bg-blue-500 text-white max-sm:w-full hover:bg-blue-600 transition-colors flex items-center shadow-sm">
+                    <Button
+                      onClick={RefetchWeeks}
+                      className=" bg-blue-500 text-white max-sm:w-full hover:bg-blue-600 transition-colors flex items-center shadow-sm"
+                    >
                       <Book className="w-4 h-4" />
                       Ajouter un cours
                     </Button>
@@ -370,7 +381,7 @@ export default function Dashboard() {
                                   onValueChange={field.onChange}
                                   value={field.value}
                                 >
-                                  <SelectTrigger className="w-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
+                                  <SelectTrigger className="w-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600 flex-wrap">
                                     <SelectValue placeholder="Choississez la semaine de cours" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-neutral-800  dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600">
@@ -380,7 +391,6 @@ export default function Dashboard() {
                                           value={week.id}
                                           key={week.id}
                                         >
-                                          Du{" "}
                                           {format(
                                             new Date(week.start_date),
                                             "EEEE d MMMM",
@@ -388,7 +398,7 @@ export default function Dashboard() {
                                           ).replace(/\b\w/g, (c) =>
                                             c.toUpperCase()
                                           )}{" "}
-                                          au{" "}
+                                          -{" "}
                                           {format(
                                             new Date(week.end_date),
                                             "EEEE d MMMM yyyy",
@@ -448,29 +458,42 @@ export default function Dashboard() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Filiere
+                                Filières
                               </FormLabel>
                               <FormControl>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <SelectTrigger className="w-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
-                                    <SelectValue placeholder="Choississez la Filiere" />
-                                  </SelectTrigger>
-                                  <SelectContent className="dark:bg-neutral-800  dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600">
-                                    <SelectGroup className="hover:cursor-pointer">
-                                      {departments?.map((department) => (
-                                        <SelectItem
-                                          value={department.id}
-                                          key={department.id}
-                                        >
-                                          {department.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
+                                <div className="flex border p-3 rounded-lg flex-wrap gap-4">
+                                  {departments?.map((department) => (
+                                    <FormItem
+                                      key={department.id}
+                                      className="flex items-center space-x-0 text-start "
+                                    >
+                                      <Checkbox
+                                        className="flex flex-wrap"
+                                        checked={field.value?.includes(
+                                          department.id
+                                        )}
+                                        onCheckedChange={(checked) => {
+                                          if (checked) {
+                                            field.onChange([
+                                              ...field.value,
+                                              department.id,
+                                            ]);
+                                          } else {
+                                            field.onChange(
+                                              field.value.filter(
+                                                (id: string) =>
+                                                  id !== department.id
+                                              )
+                                            );
+                                          }
+                                        }}
+                                      />
+                                      <FormLabel className="text-sm font-normal">
+                                        {department.name}
+                                      </FormLabel>
+                                    </FormItem>
+                                  ))}
+                                </div>
                               </FormControl>
                               <FormMessage className="text-red-400" />
                             </FormItem>
@@ -479,11 +502,31 @@ export default function Dashboard() {
 
                         <FormField
                           control={form.control}
-                          name="day_of_weeks_start"
+                          name="tp"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Jour debut du cour
+                                Travaux pratiques
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="02H"
+                                  className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage className="text-red-400" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="day_of_weeks_end"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-neutral-200 text-neutral-700">
+                                Jour fin du cour
                               </FormLabel>
                               <FormControl>
                                 <Select
@@ -491,7 +534,7 @@ export default function Dashboard() {
                                   value={field.value}
                                 >
                                   <SelectTrigger className="w-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
-                                    <SelectValue placeholder="Debut du cours" />
+                                    <SelectValue placeholder="Fin du cours" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-neutral-800  dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600">
                                     <SelectGroup className="hover:cursor-pointer">
@@ -518,11 +561,11 @@ export default function Dashboard() {
 
                         <FormField
                           control={form.control}
-                          name="day_of_weeks_end"
+                          name="day_of_weeks_start"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Jour fin du cour
+                                Jour debut du cour
                               </FormLabel>
                               <FormControl>
                                 <Select
@@ -530,7 +573,7 @@ export default function Dashboard() {
                                   value={field.value}
                                 >
                                   <SelectTrigger className="w-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
-                                    <SelectValue placeholder="Fin du cours" />
+                                    <SelectValue placeholder="Debut du cours" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-neutral-800  dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600">
                                     <SelectGroup className="hover:cursor-pointer">
@@ -597,26 +640,6 @@ export default function Dashboard() {
                           )}
                         />
 
-                        <FormField
-                          control={form.control}
-                          name="tp"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Travaux pratiques
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="02H"
-                                  className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage className="text-red-400" />
-                            </FormItem>
-                          )}
-                        />
-
                         <Button
                           type="submit"
                           className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-700"
@@ -631,6 +654,11 @@ export default function Dashboard() {
                             "Sauvegarder"
                           )}
                         </Button>
+                        <DialogClose asChild>
+                        <Button type="button" className="w-full flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-600" >
+                          Annuler
+                        </Button>
+                      </DialogClose>
                       </form>
                     </Form>
                   </DialogContent>
@@ -812,7 +840,6 @@ export default function Dashboard() {
             </Button>
           </div>
           <div className="flex items-center max-sm:mx-auto max-sm:justify-center gap-4 px-5">
-            
             <Button
               onClick={handleReload}
               className="bg-blue-600 w-full text-white sm:hidden hover:bg-blue-500"
@@ -820,7 +847,8 @@ export default function Dashboard() {
             >
               <RotateCcw
                 className={`text-white   ${isLoading ? "animate-spin" : ""}`}
-              /> {isLoading?"Rechargement en cours":"Actualiser la page"}
+              />{" "}
+              {isLoading ? "Rechargement en cours" : "Actualiser la page"}
             </Button>
 
             <Button
@@ -865,20 +893,21 @@ export default function Dashboard() {
 
           {/* Contenu */}
           <section className="overflow-y-auto max-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))]">
-          {isLoading ? (
-            <ScheduleSkeleton />
-          ) : scheduleByDay && scheduleByDay.length > 0 ? (
-            <ScheduleWeek
-              schedulesByWeek={
-                showAllPrograms ? scheduleByDay : [scheduleByDay[0]]
-              }
-              selectedStage={selectedStage}
-              selectedDepartment={selectedDepartment}
-              showAll={showAll}
-            />
-          ) : (
-            <ScheduleSkeleton />
-          )}</section>
+            {isLoading ? (
+              <ScheduleSkeleton />
+            ) : scheduleByDay && scheduleByDay.length > 0 ? (
+              <ScheduleWeek
+                schedulesByWeek={
+                  showAllPrograms ? scheduleByDay : [scheduleByDay[0]]
+                }
+                selectedStage={selectedStage}
+                selectedDepartment={selectedDepartment}
+                showAll={showAll}
+              />
+            ) : (
+              <ScheduleSkeleton />
+            )}
+          </section>
         </div>
       </main>
     </section>
