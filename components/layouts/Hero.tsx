@@ -1,7 +1,7 @@
 "use client"
 import GradientWrapper from "@/components/layouts/GradientWrapper";
 import Image from "next/image";
-import HeroImg from "@/public/images/hero.svg";
+import schedu from "@/public/images/schedu.png";
 import LayoutEffect from "@/components/layouts/LayoutEffect";
 import { Button } from "../ui/button";
 import {  ChevronRight } from "lucide-react";
@@ -53,9 +53,9 @@ export default function Hero() {
           wrapperclassname="max-w-3xl h-[200px] top-12 inset-0 sm:h-[300px] lg:h-[600px]"
         >
           <Image
-            src={HeroImg}
+            src={schedu}
             alt="Aperçu du planning"
-            className="shadow-lg mx-auto w-full max-w-5xl object-cover rounded-2xl"
+            className="shadow-lg mx-auto border w-full max-w-5xl object-cover rounded-2xl"
           />
         </GradientWrapper>
       </div>
