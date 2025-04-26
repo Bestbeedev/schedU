@@ -239,7 +239,7 @@ export default function Dashboard() {
 
   return (
     <section>
-      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-lg mb-5  ">
+      <header className=" dark:bg-neutral-700/70 bg-neutral-100 rounded-lg mb-5 border  ">
         <div className="flex flex-col justify-between sm:flex-row items-start sm:items-center py-3 space-y-3 sm:space-y-0">
           <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto px-5">
             {user?.role === "ADMIN" && (

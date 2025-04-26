@@ -21,6 +21,17 @@ const formatTime = (timeString: string): string => {
   return `${hours}H`;
 };
 
+const capitalizeFirstLetter = (dateString: string) => {
+  // Découpe la date : "26 avril 2025" -> ["26", "avril", "2025"]
+  const parts = dateString.split(' ');
+  if (parts.length >= 3) {
+    // Capitalise juste le mois
+    parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    return parts.join(' ');
+  }
+  return dateString;
+};
+
 export default function ScheduleWeek({
   schedulesByWeek,
   selectedStage,
@@ -98,17 +109,21 @@ export default function ScheduleWeek({
             className="border shadow-xl dark:bg-neutral-900/50 dark:border-neutral-700 border-neutral-200"
           >
             <CardContent className="p-6 overflow-x-auto w-full ">
-              <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
+              <div className="mb-6 p-4 border rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
                 <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
                   <h2 className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">
                     Semaine du{" "}
-                    {format(new Date(week.start_date), "dd MMMM yyyy", {
-                      locale: fr,
-                    })}{" "}
+                    {capitalizeFirstLetter(
+                      format(new Date(week.start_date), "dd MMMM yyyy", {
+                        locale: fr,
+                      })
+                    )}{" "}
                     au{" "}
-                    {format(new Date(week.end_date), "dd MMMM yyyy", {
-                      locale: fr,
-                    })}
+                    {capitalizeFirstLetter(
+                      format(new Date(week.end_date), "dd MMMM yyyy", {
+                        locale: fr,
+                      })
+                    )}
                   </h2>
 
                   {user &&
@@ -129,7 +144,7 @@ export default function ScheduleWeek({
 
               {Object.values(groupedSchedules).map((group, index) => (
                 <div key={index} className="mb-8 last:mb-0">
-                  <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-neutral-100 dark:bg-neutral-800">
+                  <div className="flex items-center gap-3 mb-4 p-3 rounded-lg border bg-neutral-100 dark:bg-neutral-800">
                     <div className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-purple-500" />
                       <span className="font-semibold text-purple-600 dark:text-purple-400">
