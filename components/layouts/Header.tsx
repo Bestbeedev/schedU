@@ -24,7 +24,6 @@ export default function Header() {
   
     if (error) {
       toast.error(`Erreur de déconnexion : ${error.message}`);
-      console.error("❌ Erreur de déconnexion :", error.message);
       return;
     }
   
@@ -87,7 +86,7 @@ export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
     const fetchDepartments = async () => {
       const { data, error } = await supabase.from("departments").select("*");
       if (error) {
-        console.error("Error fetching courses:", error);
+        toast.error(`Echec de recuperation des filieres, ${error.message}`)
       } else {
         setDepartments(data);
       }
@@ -123,7 +122,7 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
     const fetchNiveau = async () => {
       const { data, error } = await supabase.from("stages").select("*");
       if (error) {
-        console.error("Error fetching stages:", error);
+        toast.error(`Echec de recuperation des niveau d'etudes, ${error.message}`)
       } else {
         setNiveau(data);
       }

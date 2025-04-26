@@ -119,7 +119,6 @@ export default function Dashboard() {
       const scheduleByDay = await getSchedulesByWeek();
       setScheduleByDay(scheduleByDay);
     };
-
     fetchData();
   }, [selectedStage, selectedDepartment]);
 
@@ -127,7 +126,7 @@ export default function Dashboard() {
     const fetchDepartments = async () => {
       const { data, error } = await supabase.from("departments").select("*");
       if (error) {
-        console.error("Error fetching courses:", error);
+        toast.error(`Echec de recuperation des filieres, ${error.message}`)
       } else {
         setDepartments(data);
       }
@@ -136,7 +135,7 @@ export default function Dashboard() {
     const fetchRooms = async () => {
       const { data, error } = await supabase.from("rooms").select("*");
       if (error) {
-        console.error("Error fetching rooms:", error);
+        toast.error(`Echec de recuperation des salles de cours, ${error.message}`)
       } else {
         setRooms(data);
       }
@@ -145,7 +144,7 @@ export default function Dashboard() {
     const fetchWeeks = async () => {
       const { data, error } = await supabase.from("weeks").select("*");
       if (error) {
-        console.error("Error fetching weeks:", error);
+        toast.error(`Echec de recuperation des semaines de cours, ${error.message}`)
       } else {
         setWeeks(data);
       }
@@ -154,7 +153,7 @@ export default function Dashboard() {
     const fetchStages = async () => {
       const { data, error } = await supabase.from("stages").select("*");
       if (error) {
-        console.error("Error fetching stages:", error);
+        toast.error(`Echec de recuperation des niveau d'etudes, ${error.message}`)
       } else {
         setStages(data);
       }
@@ -169,7 +168,7 @@ export default function Dashboard() {
   const RefetchWeeks = async () => {
     const { data, error } = await supabase.from("weeks").select("*");
     if (error) {
-      console.error("Error fetching weeks:", error);
+      toast.error(`Echec de recuperation des semaines de cours, ${error.message}`)
     } else {
       setWeeks(data);
     }
@@ -180,12 +179,10 @@ export default function Dashboard() {
     try {
       const { error } = await supabase.from("weeks").insert(values);
       if (error) {
-        console.error("Erreur lors de l'insertion :", error.message);
-        toast.error("Erreur lors de l'insertion des données.");
+        toast.error(`Erreur lors de l'insertion : ${error.message}`)
         return;
       }
     } catch (error) {
-      console.error("Erreur lors de l'insertion :", error);
       toast.error("Erreur lors de l'insertion des données.");
     } finally {
       setIsLoading(false);
@@ -208,14 +205,12 @@ export default function Dashboard() {
       const { error } = await supabase.from("schedules").insert(insertData);
   
       if (error) {
-        console.error("Erreur lors de l'insertion :", error.message);
-        toast.error("Erreur lors de l'insertion des données.");
+        toast.error(`Erreur lors de l'insertion des données:${error.message}`);
         return;
       }
   
       toast.success("Planning enregistré avec succès !");
     } catch (error) {
-      console.error("Erreur lors de l'insertion :", error);
       toast.error("Erreur lors de l'insertion des données.");
     } finally {
       setIsLoading(false);
@@ -230,7 +225,6 @@ export default function Dashboard() {
       setScheduleByDay(scheduleByDay);
       toast.success("Données rafraîchies avec succès !");
     } catch (error) {
-      console.error("Erreur lors du rafraîchissement :", error);
       toast.error("Erreur lors du rafraîchissement des données.");
     } finally {
       setIsLoading(false);

@@ -49,7 +49,6 @@ export default function LoginPage() {
         email: values.email,
         password: values.password,
       });
-      console.log("🟢 SESSION after login:", data.session); // ✅ doit exister
       if (error) {
         toast.error(error.message);
         return;
@@ -65,7 +64,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Erreur lors de la connexion");
+      toast.error("Erreur lors de la connexion:" + err);
     } finally {
       setIsLoading(false);
       setAuthLoading(false);
