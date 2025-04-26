@@ -67,7 +67,7 @@ const ScheduleSkeleton = () => {
     <div className="space-y-4">
       {[...Array(1)].map((_, index) => (
         <div key={index} className="flex gap-4">
-          <Skeleton className="h-96 dark:bg-neutral-700/90 w-full" />
+          <Skeleton className="h-96 dark:bg-neutral-700/90  bg-neutral-200 border w-full" />
         </div>
       ))}
     </div>
