@@ -93,7 +93,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm sm:max-w-md h-fit  justify-center my-auto mx-auto max-sm:mx-4 p-6 rounded-xl shadow-none border dark:bg-neutral-800 dark:border-neutral-700 text-neutral-50 dark:text-white">
+    <Card className="w-full max-w-sm sm:max-w-md h-fit  justify-center my-auto mx-auto max-sm:mx-4 p-6 rounded-xl shadow-md border dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-none  dark:text-white">
       <CardHeader className="space-y-1 text-center">
         <h2 className="text-2xl font-semibold dark:border-neutral-100 tracking-tight">
           Se connecter
