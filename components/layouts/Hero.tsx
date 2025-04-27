@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <div className="custom-screen w-full px-4 py-20 sm:py-28">
+    <div className="custom-screen bg-neutral-900 w-full px-4 py-20 sm:py-28">
     <LayoutEffect
       className="duration-1000 delay-300"
       isInviewState={{
@@ -52,7 +52,7 @@ export default function Hero() {
           <Image
             src={schedu}
             alt="Aperçu du planning"
-            className="shadow-lg mx-auto border w-full max-w-5xl object-cover rounded-2xl"
+            className="shadow-lg mx-auto border border-neutral-700 w-full max-w-5xl object-cover rounded-2xl"
           />
         </GradientWrapper>
       </div>
