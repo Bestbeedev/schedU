@@ -180,10 +180,12 @@ export default function Dashboard() {
       const { error } = await supabase.from("weeks").insert(values);
       if (error) {
         toast.error(`Erreur lors de l'insertion : ${error.message}`)
+        console.log(error)
         return;
       }
     } catch (error) {
       toast.error("Erreur lors de l'insertion des données.");
+      console.log(error)
     } finally {
       setIsLoading(false);
       toast.success("Semaine enregistré avec succès !");
@@ -206,12 +208,14 @@ export default function Dashboard() {
   
       if (error) {
         toast.error(`Erreur lors de l'insertion des données:${error.message}`);
+        console.log(error)
         return;
       }
   
       toast.success("Planning enregistré avec succès !");
     } catch (error) {
       toast.error("Erreur lors de l'insertion des données.");
+      console.log(error)
     } finally {
       setIsLoading(false);
     }
@@ -226,6 +230,7 @@ export default function Dashboard() {
       toast.success("Données rafraîchies avec succès !");
     } catch (error) {
       toast.error("Erreur lors du rafraîchissement des données.");
+      console.log(error)
     } finally {
       setIsLoading(false);
     }
