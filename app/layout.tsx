@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthInitializer } from "@/lib/authInitializer";
 import { Toaster } from "sonner";
 import NetworkStatusListener from "@/components/layouts/NetworkStatus";
+import {Analytics} from "@vercel/analytics/react"
 
 import { Metadata } from "next";
 
@@ -45,6 +46,7 @@ export default function RootLayout({
             position="top-center"
           />
           {children}
+          <Analytics/>
         </ThemeProvider>
       </body>
     </html>
