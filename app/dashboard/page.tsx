@@ -20,6 +20,7 @@ import { Weeks, WeekSchedule } from "@/types/tables";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -103,27 +104,38 @@ export default function Dashboard() {
     },
   });
 
+  const { monday, friday } = useCurrentWeek(); // Utilisation du hook pour obtenir les dates
   const formWeeks = useForm<z.infer<typeof weekSchema>>({
     resolver: zodResolver(weekSchema),
     defaultValues: {
-      start_date: undefined,
-      end_date: undefined,
+      start_date: monday,
+      end_date: friday,
     },
   });
 
-  const { monday, friday } = useCurrentWeek();  // Utilisation du hook pour obtenir les dates
+  const [checkedDate, setCheckedDate] = useState(false);
+
+  const handleCheckDate = () => {
+    setCheckedDate(!checkedDate);
+  };
+
+  const handleSetMondayFriday = (checked: Boolean) => {
+    if (checked === false) {
+      formWeeks.setValue("end_date", friday);
+      formWeeks.setValue("start_date", monday);
+    }
+    return;
+  };
 
   useEffect(() => {
-    formWeeks.setValue('start_date', monday);
-    formWeeks.setValue('end_date', friday);
-  }, [monday, friday, formWeeks]);
+    handleSetMondayFriday(checkedDate);
+  }, [checkedDate]);
 
   const [departments, setDepartments] = useState<Filiere[]>([]);
   const [stages, setStages] = useState<Filiere[]>([]);
   const [rooms, setRooms] = useState<Filiere[]>([]);
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const supabase = createClient();
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,7 +144,6 @@ export default function Dashboard() {
     };
     fetchData();
   }, [selectedStage, selectedDepartment]);
-
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -261,7 +272,6 @@ export default function Dashboard() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <section>
@@ -680,7 +690,7 @@ export default function Dashboard() {
                             "Sauvegarder"
                           )}
                         </Button>
-                        <DialogClose  asChild>
+                        <DialogClose asChild>
                           <Button
                             type="button"
                             className="w-full flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-700"
@@ -710,8 +720,8 @@ export default function Dashboard() {
                         Enregistrez une semaine
                       </DialogTitle>
                       <DialogDescription className="text-center mb-5 mx-auto">
-                        Renseigner la date du debut et de la fin de votre
-                        semaine de cours
+                      Cliquez sur Sauvegarder pour programmer la semaine actuelle, ou cochez la case pour choisir d'autres dates.
+                        
                       </DialogDescription>
                     </DialogHeader>
 
@@ -720,6 +730,23 @@ export default function Dashboard() {
                         onSubmit={formWeeks.handleSubmit(onSubmitWeeks)}
                         className="space-y-6"
                       >
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border -mt-3 p-4 shadow">
+                          <FormControl>
+                            <Checkbox
+                              checked={checkedDate}
+                              onCheckedChange={handleCheckDate}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              Programmer une autre semaine
+                            </FormLabel>
+                            <FormDescription>
+                              Cochez si vous souhaitez choisir une autre semaine
+                              que celle en cours.
+                            </FormDescription>
+                          </div>
+                        </FormItem>
                         <FormField
                           control={formWeeks.control}
                           name="start_date"
@@ -733,10 +760,12 @@ export default function Dashboard() {
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
+                                      disabled={checkedDate === false}
                                       variant={"outline"}
                                       className={cn(
                                         "w-full pl-3 text-left font-normal",
-                                        !field.value && "text-muted-foreground"
+                                        !field.value && "text-muted-foreground",
+                                        "disabled:opacity-100 disabled:dark:text-neutral-100 disabled:cursor-not-allowed"
                                       )}
                                     >
                                       {field.value ? (
@@ -753,8 +782,8 @@ export default function Dashboard() {
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent
-                                  className="w-auto p-0"
-                                  align="start"
+                                  className="w-auto dark:bg-neutral-800 p-0"
+                                  align="center"
                                 >
                                   <Calendar
                                     mode="single"
@@ -788,10 +817,12 @@ export default function Dashboard() {
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
+                                      disabled={checkedDate===false}
                                       variant={"outline"}
                                       className={cn(
                                         "w-full pl-3 text-left font-normal",
-                                        !field.value && "text-muted-foreground"
+                                        !field.value && "text-muted-foreground",
+                                        "disabled:opacity-100 disabled:dark:text-neutral-100 disabled:cursor-not-allowed"
                                       )}
                                     >
                                       {field.value ? (
@@ -808,8 +839,8 @@ export default function Dashboard() {
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent
-                                  className="w-auto p-0"
-                                  align="start"
+                                  className="w-auto dark:bg-neutral-800 p-0"
+                                  align="center"
                                 >
                                   <Calendar
                                     mode="single"
@@ -844,7 +875,7 @@ export default function Dashboard() {
                             "Sauvegarder"
                           )}
                         </Button>
-                        <DialogClose  asChild>
+                        <DialogClose asChild>
                           <Button
                             type="button"
                             className="w-full -mt-4 flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-700"
