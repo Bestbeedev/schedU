@@ -4,9 +4,15 @@ import { AuthInitializer } from "@/lib/authInitializer";
 import { Toaster } from "sonner";
 import NetworkStatusListener from "@/components/layouts/NetworkStatus";
 import {Analytics} from "@vercel/analytics/react"
-
 import { Metadata } from "next";
+import { Inter } from 'next/font/google'
 
+// Configure ta font
+const inter = Inter({
+  subsets: ['latin'], 
+  weight: ['400', '700'], // poids que tu veux
+  variable: '--font-inter' // optionnel : pour utiliser dans Tailwind
+})
 export const metadata: Metadata = {
   title: "schedU - Votre planning étudiant",
   description: "Consultez facilement votre programme de cours hebdomadaire avec schedU.",
@@ -24,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" className={inter.className} suppressHydrationWarning>
       <head>
         {/* fallback pour certaines balises pas encore couvertes par metadata */}
         <link rel="manifest" href="/manifest.json" />
