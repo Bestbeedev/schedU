@@ -119,7 +119,7 @@ export default function Dashboard() {
     setCheckedDate(!checkedDate);
   };
 
-  const handleSetMondayFriday = (checked: Boolean) => {
+  const handleSetMondayFriday = (checked: boolean) => {
     if (checked === false) {
       formWeeks.setValue("end_date", friday);
       formWeeks.setValue("start_date", monday);
@@ -129,7 +129,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     handleSetMondayFriday(checkedDate);
-  }, [checkedDate]);
+  }, [checkedDate,handleSetMondayFriday]);
 
   const [departments, setDepartments] = useState<Filiere[]>([]);
   const [stages, setStages] = useState<Filiere[]>([]);
@@ -720,8 +720,7 @@ export default function Dashboard() {
                         Enregistrez une semaine
                       </DialogTitle>
                       <DialogDescription className="text-center mb-5 mx-auto">
-                      Cliquez sur Sauvegarder pour programmer la semaine actuelle, ou cochez la case pour choisir d'autres dates.
-                        
+                        {"Cliquez sur Sauvegarder pour programmer la semaine actuelle, ou cochez la case pour choisir d'autres dates."}
                       </DialogDescription>
                     </DialogHeader>
 
@@ -738,9 +737,7 @@ export default function Dashboard() {
                             />
                           </FormControl>
                           <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              Programmer une autre semaine
-                            </FormLabel>
+                            <FormLabel>Programmer une autre semaine</FormLabel>
                             <FormDescription>
                               Cochez si vous souhaitez choisir une autre semaine
                               que celle en cours.
@@ -817,7 +814,7 @@ export default function Dashboard() {
                                 <PopoverTrigger asChild>
                                   <FormControl>
                                     <Button
-                                      disabled={checkedDate===false}
+                                      disabled={checkedDate === false}
                                       variant={"outline"}
                                       className={cn(
                                         "w-full pl-3 text-left font-normal",
