@@ -61,6 +61,8 @@ import { getSchedulesByWeek } from "@/lib/schedule";
 import { useFiltersStore } from "@/stores/filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
+import useCurrentWeek from "@/hook/useCurrentWeek";
 
 const ScheduleSkeleton = () => {
   return (
@@ -81,6 +83,7 @@ export default function Dashboard() {
   const [scheduleByDay, setScheduleByDay] = useState<WeekSchedule[]>([]);
   const [showAllPrograms, setShowAllPrograms] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof scheduleSchema>>({
     resolver: zodResolver(scheduleSchema),
@@ -108,11 +111,19 @@ export default function Dashboard() {
     },
   });
 
+  const { monday, friday } = useCurrentWeek();  // Utilisation du hook pour obtenir les dates
+
+  useEffect(() => {
+    formWeeks.setValue('start_date', monday);
+    formWeeks.setValue('end_date', friday);
+  }, [monday, friday, formWeeks]);
+
   const [departments, setDepartments] = useState<Filiere[]>([]);
   const [stages, setStages] = useState<Filiere[]>([]);
   const [rooms, setRooms] = useState<Filiere[]>([]);
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const supabase = createClient();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,11 +133,12 @@ export default function Dashboard() {
     fetchData();
   }, [selectedStage, selectedDepartment]);
 
+
   useEffect(() => {
     const fetchDepartments = async () => {
       const { data, error } = await supabase.from("departments").select("*");
       if (error) {
-        toast.error(`Echec de recuperation des filieres, ${error.message}`)
+        toast.error(`Echec de recuperation des filieres, ${error.message}`);
       } else {
         setDepartments(data);
       }
@@ -135,16 +147,23 @@ export default function Dashboard() {
     const fetchRooms = async () => {
       const { data, error } = await supabase.from("rooms").select("*");
       if (error) {
-        toast.error(`Echec de recuperation des salles de cours, ${error.message}`)
+        toast.error(
+          `Echec de recuperation des salles de cours, ${error.message}`
+        );
       } else {
         setRooms(data);
       }
     };
 
     const fetchWeeks = async () => {
-      const { data, error } = await supabase.from("weeks").select("*");
+      const { data, error } = await supabase
+        .from("weeks")
+        .select("*")
+        .order("start_date", { ascending: false });
       if (error) {
-        toast.error(`Echec de recuperation des semaines de cours, ${error.message}`)
+        toast.error(
+          `Echec de recuperation des semaines de cours, ${error.message}`
+        );
       } else {
         setWeeks(data);
       }
@@ -153,7 +172,9 @@ export default function Dashboard() {
     const fetchStages = async () => {
       const { data, error } = await supabase.from("stages").select("*");
       if (error) {
-        toast.error(`Echec de recuperation des niveau d'etudes, ${error.message}`)
+        toast.error(
+          `Echec de recuperation des niveau d'etudes, ${error.message}`
+        );
       } else {
         setStages(data);
       }
@@ -166,9 +187,14 @@ export default function Dashboard() {
   }, [supabase]);
 
   const RefetchWeeks = async () => {
-    const { data, error } = await supabase.from("weeks").select("*");
+    const { data, error } = await supabase
+      .from("weeks")
+      .select("*")
+      .order("start_date", { ascending: false });
     if (error) {
-      toast.error(`Echec de recuperation des semaines de cours, ${error.message}`)
+      toast.error(
+        `Echec de recuperation des semaines de cours, ${error.message}`
+      );
     } else {
       setWeeks(data);
     }
@@ -179,48 +205,48 @@ export default function Dashboard() {
     try {
       const { error } = await supabase.from("weeks").insert(values);
       if (error) {
-        toast.error(`Erreur lors de l'insertion : ${error.message}`)
-        console.log(error)
+        toast.error(`Erreur lors de l'insertion : ${error.message}`);
+        console.log(error);
         return;
       }
     } catch (error) {
       toast.error("Erreur lors de l'insertion des données.");
-      console.log(error)
+      console.log(error);
     } finally {
       setIsLoading(false);
       toast.success("Semaine enregistré avec succès !");
+      RefetchWeeks();
+      router.push("/dashboard");
     }
   }
 
-
   async function onSubmit(values: z.infer<typeof scheduleSchema>) {
     setIsLoading(true);
-  
+
     try {
       const { department_id, ...otherFields } = values;
-  
+
       const insertData = department_id.map((depId) => ({
         department_id: depId,
         ...otherFields,
       }));
-  
+
       const { error } = await supabase.from("schedules").insert(insertData);
-  
+
       if (error) {
         toast.error(`Erreur lors de l'insertion des données:${error.message}`);
-        console.log(error)
+        console.log(error);
         return;
       }
-  
       toast.success("Planning enregistré avec succès !");
     } catch (error) {
       toast.error("Erreur lors de l'insertion des données.");
-      console.log(error)
+      console.log(error);
     } finally {
+      handleReload();
       setIsLoading(false);
     }
   }
-  
 
   const handleReload = async () => {
     setIsLoading(true);
@@ -230,11 +256,12 @@ export default function Dashboard() {
       toast.success("Données rafraîchies avec succès !");
     } catch (error) {
       toast.error("Erreur lors du rafraîchissement des données.");
-      console.log(error)
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <section>
@@ -641,7 +668,7 @@ export default function Dashboard() {
 
                         <Button
                           type="submit"
-                          className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-700"
+                          className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-800"
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -653,11 +680,14 @@ export default function Dashboard() {
                             "Sauvegarder"
                           )}
                         </Button>
-                        <DialogClose asChild>
-                        <Button type="button" className="w-full flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-600" >
-                          Annuler
-                        </Button>
-                      </DialogClose>
+                        <DialogClose  asChild>
+                          <Button
+                            type="button"
+                            className="w-full flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-700"
+                          >
+                            Annuler
+                          </Button>
+                        </DialogClose>
                       </form>
                     </Form>
                   </DialogContent>
@@ -677,10 +707,10 @@ export default function Dashboard() {
                   <DialogContent className="sm:max-w-sm dark:bg-neutral-800 h-fit overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle className="text-center mx-auto">
-                        Enregistrez une semiane
+                        Enregistrez une semaine
                       </DialogTitle>
                       <DialogDescription className="text-center mb-5 mx-auto">
-                        Renseigner toute les informations concernant le la
+                        Renseigner la date du debut et de la fin de votre
                         semaine de cours
                       </DialogDescription>
                     </DialogHeader>
@@ -688,7 +718,7 @@ export default function Dashboard() {
                     <Form {...form}>
                       <form
                         onSubmit={formWeeks.handleSubmit(onSubmitWeeks)}
-                        className="space-y-5"
+                        className="space-y-6"
                       >
                         <FormField
                           control={formWeeks.control}
@@ -696,7 +726,7 @@ export default function Dashboard() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Date debut de la semaine
+                                Date du debut de la semaine
                               </FormLabel>
 
                               <Popover>
@@ -751,7 +781,7 @@ export default function Dashboard() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                                Date fin de la semaine
+                                Date de fin de la semaine
                               </FormLabel>
 
                               <Popover>
@@ -802,7 +832,7 @@ export default function Dashboard() {
 
                         <Button
                           type="submit"
-                          className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-700"
+                          className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-800"
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -814,6 +844,14 @@ export default function Dashboard() {
                             "Sauvegarder"
                           )}
                         </Button>
+                        <DialogClose  asChild>
+                          <Button
+                            type="button"
+                            className="w-full -mt-4 flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-700"
+                          >
+                            Annuler
+                          </Button>
+                        </DialogClose>
                       </form>
                     </Form>
                   </DialogContent>

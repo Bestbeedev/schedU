@@ -4,6 +4,17 @@ import { useAuthStore } from "@/stores/auth";
 import { createClient } from "@/lib/client";
 import { useFiltersStore } from "@/stores/filters";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -18,62 +29,105 @@ export default function Header() {
   const supabase = createClient();
   const router = useRouter();
   const { showAll } = useFiltersStore();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-  
-    if (error) {
-      toast.error(`Erreur de déconnexion : ${error.message}`);
-      return;
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error(`Erreur de déconnexion : ${error.message}`);
+        return;
+      } else {
+        useAuthStore.getState().setUser(null);
+        toast.success("Déconnexion réussie"); // ✅ après le push
+      }
+    } catch (error) {
+      toast.error(`Erreur de déconnexion : ${error}`);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      await router.push("/login"); // ⬅️ attendre la redirection
     }
-  
-    useAuthStore.getState().setUser(null);
-    await router.push("/login"); // ⬅️ attendre la redirection
-    toast.success("Déconnexion réussie"); // ✅ après le push
   };
 
   return (
-<header className="bg-white dark:bg-neutral-800 sticky top-0 border-b px-4 py-3 md:px-6 md:py-4 z-50">
-  <div className="flex flex-wrap items-center justify-between gap-4">
-    {/* Logo & Titre */}
-    <section className="flex items-center gap-2">
-      <Calendar className="size-5" />
-      <Link className="cursor-pointer flex items-center gap-2" href={'/'}>
-      <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
-      <Badge variant="outline" className="text-sm hidden sm:inline">
-        v.1.0.0
-      </Badge>
-      </Link>
-    </section>
+    <header className="bg-white dark:bg-neutral-800 sticky top-0 border-b px-4 py-3 md:px-6 md:py-4 z-50">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Logo & Titre */}
+        <section className="flex items-center gap-2">
+          <Calendar className="size-5" />
+          <Link className="cursor-pointer flex items-center gap-2" href={"/"}>
+            <h1 className="text-xl font-semibold text-green-500">SchedU</h1>
+            <Badge variant="outline" className="text-sm hidden sm:inline">
+              v.1.0.0
+            </Badge>
+          </Link>
+        </section>
 
-    {/* Filtres - Masqués sur mobile */}
-    <section className="hidden md:flex items-center gap-2 flex-1 justify-center">
-      <SelectFiliere disabled={showAll} />
-      <SelectGrade disabled={showAll} />
-    </section>
+        {/* Filtres - Masqués sur mobile */}
+        <section className="hidden md:flex items-center gap-2 flex-1 justify-center">
+          <SelectFiliere disabled={showAll} />
+          <SelectGrade disabled={showAll} />
+        </section>
 
-    {/* Actions */}
-    <section className="flex items-center gap-2 sm:gap-3">
-      <ModeToggle />
-      <AvatarUser />
-      <Button
-        variant="outline"
-        className="cursor-pointer text-sm px-2 sm:px-4"
-        onClick={handleLogout}
-      >
-        <LogOut className=" h-4 w-4" />
-        <span className="hidden sm:inline">Logout</span>
-      </Button>
-    </section>
-  </div>
+        {/* Actions */}
+        <section className="flex items-center gap-2 sm:gap-3">
+          <ModeToggle />
+          <AvatarUser />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="cursor-pointer text-sm px-2 sm:px-4"
+              >
+                <LogOut className=" h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-sm dark:bg-neutral-800 h-fit">
+              <DialogHeader className="text-center">
+                <DialogTitle className="text-center  leading-6">Voulez vous vraiment se deconnectez?</DialogTitle>
+                <DialogDescription>
+                  {""}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="flex flex-col gap-2">
+                <Button
+                  type="submit"
+                  onClick={handleLogout}
+                  className="w-full flex bg-green-600 cursor-pointer text-neutral-100 hover:bg-green-800"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-100 border-t-transparent" />
+                      <span>Deconnexion en cours...</span>
+                    </div>
+                  ) : (
+                    "Accepter"
+                  )}
+                </Button>
+              </DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  className="w-full -mt-2 flex bg-red-500 cursor-pointer text-neutral-100 hover:bg-red-700"
+                >
+                  Annuler
+                </Button>
+              </DialogClose>
+            </DialogContent>
+          </Dialog>
+        </section>
+      </div>
 
-  {/* Filtres affichés en dessous sur mobile */}
-  <div className="flex flex-row items-center justify-between mx-auto gap-2 mt-3 md:hidden">
-    <SelectFiliere disabled={showAll} />
-    <SelectGrade disabled={showAll} />
-  </div>
-</header>
-
+      {/* Filtres affichés en dessous sur mobile */}
+      <div className="flex flex-row items-center justify-between mx-auto gap-2 mt-3 md:hidden">
+        <SelectFiliere disabled={showAll} />
+        <SelectGrade disabled={showAll} />
+      </div>
+    </header>
   );
 }
 
@@ -86,7 +140,7 @@ export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
     const fetchDepartments = async () => {
       const { data, error } = await supabase.from("departments").select("*");
       if (error) {
-        toast.error(`Echec de recuperation des filieres, ${error.message}`)
+        toast.error(`Echec de recuperation des filieres, ${error.message}`);
       } else {
         setDepartments(data);
       }
@@ -95,7 +149,11 @@ export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
   }, [supabase]);
 
   return (
-    <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={disabled}>
+    <Select
+      value={selectedDepartment}
+      onValueChange={setSelectedDepartment}
+      disabled={disabled}
+    >
       <SelectTrigger className="w-[150px] dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
         <SelectValue placeholder="Filiere:" />
       </SelectTrigger>
@@ -103,7 +161,11 @@ export function SelectFiliere({ disabled = false }: { disabled?: boolean }) {
         <SelectGroup className="hover:cursor-pointer">
           <SelectLabel>Choix de filiere</SelectLabel>
           {departments?.map((fil) => (
-            <SelectItem key={fil.id} className="cursor-pointer" value={fil.name}>
+            <SelectItem
+              key={fil.id}
+              className="cursor-pointer"
+              value={fil.name}
+            >
               {fil.name}
             </SelectItem>
           ))}
@@ -122,7 +184,9 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
     const fetchNiveau = async () => {
       const { data, error } = await supabase.from("stages").select("*");
       if (error) {
-        toast.error(`Echec de recuperation des niveau d'etudes, ${error.message}`)
+        toast.error(
+          `Echec de recuperation des niveau d'etudes, ${error.message}`
+        );
       } else {
         setNiveau(data);
       }
@@ -131,7 +195,11 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
   }, [supabase]);
 
   return (
-    <Select value={selectedStage} onValueChange={setSelectedStage} disabled={disabled}>
+    <Select
+      value={selectedStage}
+      onValueChange={setSelectedStage}
+      disabled={disabled}
+    >
       <SelectTrigger className="w-[150px] dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-500 text-neutral-600">
         <SelectValue placeholder="Niveau:" />
       </SelectTrigger>
@@ -139,7 +207,11 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
         <SelectGroup className="hover:cursor-pointer">
           <SelectLabel>Niveau</SelectLabel>
           {niveau?.map((niv) => (
-            <SelectItem key={niv.id} className="cursor-pointer" value={niv.name}>
+            <SelectItem
+              key={niv.id}
+              className="cursor-pointer"
+              value={niv.name}
+            >
               {niv.name}
             </SelectItem>
           ))}
@@ -149,7 +221,7 @@ export function SelectGrade({ disabled = false }: { disabled?: boolean }) {
   );
 }
 
-import { Avatar, AvatarFallback} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function AvatarUser() {
   const { user } = useAuthStore();
