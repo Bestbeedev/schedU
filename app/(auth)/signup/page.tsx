@@ -2,7 +2,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,10 +29,12 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
 import { createClient } from "@/lib/client";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = React.useState(false);
   const { setUser, setIsLoading: setAuthLoading } = useAuthStore();
+  const [showPassword, setShowPassword] = React.useState(false)
   const supabase = createClient();
   const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
@@ -126,12 +127,22 @@ export default function SignupPage() {
                     Mot de passe
                   </FormLabel>
                   <FormControl>
+                  <div className="relative">
                     <Input
-                      placeholder="........."
-                      className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="***********"
+                      className="pr-10 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
                       {...field}
                     />
-                  </FormControl>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </FormControl>
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}

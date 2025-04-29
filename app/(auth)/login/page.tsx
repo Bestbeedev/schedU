@@ -28,10 +28,12 @@ import { useAuthStore } from "@/stores/auth";
 import { createClient } from "@/lib/client";
 import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = React.useState(false);
   const { setUser, setIsLoading: setAuthLoading } = useAuthStore();
+  const [showPassword, setShowPassword] = React.useState(false)
   const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
@@ -115,7 +117,7 @@ export default function LoginPage() {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="johndoe"
+                      placeholder="example23@gmail.com"
                       className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
                       {...field}
                     />
@@ -130,18 +132,28 @@ export default function LoginPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="dark:text-neutral-200 text-neutral-700">
-                    Mot de passe
-                  </FormLabel>
-                  <FormControl>
+                <FormLabel className="dark:text-neutral-200 text-neutral-700">
+                  Mot de passe
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
                     <Input
-                      placeholder="........."
-                      className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="***********"
+                      className="pr-10 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 placeholder:text-neutral-500 text-neutral-600"
                       {...field}
                     />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage className="text-red-400" />
+              </FormItem>
               )}
             />
 
