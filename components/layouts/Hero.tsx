@@ -29,8 +29,9 @@ export default function Hero() {
             Consultez votre programme de cours hebdomadaire en ligne
           </h1>
   
-          <p className="max-w-xl text-sm mx-auto text-gray-300   sm:text-lg">
-            schedU centralise votre emploi du temps : fini les mails perdus ou les messages WhatsApp. Retrouvez vos cours, horaires, salles et enseignants à tout moment, sur tous vos appareils.
+          <p className="max-w-xl text-sm mx-auto text-gray-300   sm:text-base">
+          Bienvenue sur schedU – votre emploi du temps, clair et accessible, partout.
+          Suivez vos cours semaine après semaine grâce à une interface intuitive et toujours à jour. Fini les informations dispersées : retrouvez en un clin d'œil vos horaires, salles et enseignants, depuis n’importe quel appareil.
           </p>
   
           <div className="flex justify-center">
@@ -46,14 +47,16 @@ export default function Hero() {
         </div>
   
         <GradientWrapper
-          className="mt-14 sm:mt-24"
+          className="mt-10 sm:mt-18"
           wrapperclassname="max-w-3xl h-[200px] top-12 inset-0 sm:h-[300px] lg:h-[600px]"
         >
+          <div className="bg-neutral-700/80 rounded-2xl p-3 mx-auto border w-fit h-fit">
           <Image
             src={schedu}
             alt="Aperçu du planning"
-            className="shadow-lg mx-auto border border-neutral-700 w-full max-w-5xl object-cover rounded-2xl"
+            className="shadow-lg mx-auto w-full max-w-5xl object-cover rounded-2xl"
           />
+          </div>
         </GradientWrapper>
       </div>
     </LayoutEffect>
