@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
+
 import {
   CalendarIcon,
   ChevronDown,
@@ -209,12 +210,24 @@ export default function Dashboard() {
     } else {
       setWeeks(data);
     }
+    console.log("Values from supabase",data)
   };
+
+ 
 
   async function onSubmitWeeks(values: z.infer<typeof weekSchema>) {
     setIsLoading(true);
+    console.log("Values from frontend", values);
+  
+    // ✅ Conversion des dates en "yyyy-MM-dd"
+    const formattedValues = {
+      ...values,
+      start_date: format(values.start_date, "yyyy-MM-dd"),
+      end_date: format(values.end_date, "yyyy-MM-dd"),
+    };
+  
     try {
-      const { error } = await supabase.from("weeks").insert(values);
+      const { error } = await supabase.from("weeks").insert(formattedValues);
       if (error) {
         toast.error(`Erreur lors de l'insertion : ${error.message}`);
         console.log(error);
@@ -225,11 +238,12 @@ export default function Dashboard() {
       console.log(error);
     } finally {
       setIsLoading(false);
-      toast.success("Semaine enregistré avec succès !");
+      toast.success("Semaine enregistrée avec succès !");
       RefetchWeeks();
       router.push("/dashboard");
     }
   }
+  
 
   async function onSubmit(values: z.infer<typeof scheduleSchema>) {
     setIsLoading(true);
@@ -264,6 +278,7 @@ export default function Dashboard() {
     try {
       const scheduleByDay = await getSchedulesByWeek();
       setScheduleByDay(scheduleByDay);
+      RefetchWeeks()
       toast.success("Données rafraîchies avec succès !");
     } catch (error) {
       toast.error("Erreur lors du rafraîchissement des données.");

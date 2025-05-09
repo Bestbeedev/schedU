@@ -3,25 +3,32 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthInitializer } from "@/lib/authInitializer";
 import { Toaster } from "sonner";
 import NetworkStatusListener from "@/components/layouts/NetworkStatus";
-import {Analytics} from "@vercel/analytics/react"
-import { Metadata } from "next";
-import { Inter } from 'next/font/google'
+import { Analytics } from "@vercel/analytics/react";
+import { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 
 // Configure ta font
 const inter = Inter({
-  subsets: ['latin'], 
-  weight: ['400', '700'], // poids que tu veux
-  variable: '--font-inter' // optionnel : pour utiliser dans Tailwind
-})
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "700", "800", "900"],
+  variable: "--font-inter",
+});
+
+// ✅ Metadata sans themeColor
 export const metadata: Metadata = {
   title: "schedU - Votre planning étudiant",
-  description: "Consultez facilement votre programme de cours hebdomadaire avec schedU.",
+  description:
+    "Consultez facilement votre programme de cours hebdomadaire avec schedU.",
   manifest: "/manifest.json",
-  themeColor: "#16a34a",
   icons: {
     icon: "/icons/icon192x192.png",
-    apple: "/icons/icon192x192.png", // pour iOS
+    apple: "/icons/icon192x192.png",
   },
+};
+
+// ✅ themeColor déplacé ici
+export const viewport: Viewport = {
+  themeColor: "#16a34a",
 };
 
 export default function RootLayout({
@@ -32,9 +39,8 @@ export default function RootLayout({
   return (
     <html lang="fr" className={inter.className} suppressHydrationWarning>
       <head>
-        {/* fallback pour certaines balises pas encore couvertes par metadata */}
+        {/* fallback facultatif */}
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#16a34a" />
         <link rel="apple-touch-icon" href="/icons/icon192x192.png" />
       </head>
       <body>
@@ -46,13 +52,9 @@ export default function RootLayout({
         >
           <AuthInitializer />
           <NetworkStatusListener />
-          <Toaster 
-            closeButton 
-            theme="light"
-            position="top-center"
-          />
+          <Toaster closeButton theme="light" position="top-center" />
           {children}
-          <Analytics/>
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
