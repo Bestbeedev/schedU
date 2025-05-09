@@ -52,6 +52,7 @@ export default function ScheduleWeek({
     });
     return filteredSchedules.length > 0;
   });
+  
 
   if (!hasSchedules) {
     return (
@@ -187,7 +188,7 @@ export default function ScheduleWeek({
                         {group.schedules.map((course) => (
                           <tr
                             key={course.id}
-                            className="border-b dark:border-neutral-700 text-sm text-center border-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/60 transition-colors"
+                            className="border-b dark:border-neutral-700 text-sm text-center border-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
                           >
                             <td className="py-4 px-4">
                               <div className="font-medium  text-neutral-900 dark:text-neutral-100">

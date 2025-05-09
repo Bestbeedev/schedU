@@ -21,7 +21,7 @@ export async function getSchedulesByWeek(): Promise<WeekSchedule[]> {
   const { data: weeks, error: weekError } = await supabase
     .from("weeks")
     .select("*")
-    .order("start_date", { ascending: true })
+    .order("start_date", { ascending: false })
 
   if (weekError) {
     console.error("Erreur en récupérant les semaines :", weekError.message)

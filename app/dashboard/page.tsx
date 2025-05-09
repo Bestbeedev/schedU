@@ -210,15 +210,12 @@ export default function Dashboard() {
     } else {
       setWeeks(data);
     }
-    console.log("Values from supabase",data)
   };
 
  
 
   async function onSubmitWeeks(values: z.infer<typeof weekSchema>) {
-    setIsLoading(true);
-    console.log("Values from frontend", values);
-  
+    setIsLoading(true);  
     // ✅ Conversion des dates en "yyyy-MM-dd"
     const formattedValues = {
       ...values,
@@ -287,6 +284,27 @@ export default function Dashboard() {
       setIsLoading(false);
     }
   };
+
+  
+  const currentWeekSchedule = scheduleByDay.find(weekSchedule => {
+    const today = new Date();
+    // Force début de journée et fin de journée
+    const start = new Date(weekSchedule.week.start_date + "T00:00:00");
+    const end = new Date(weekSchedule.week.end_date + "T23:59:59");
+    return today >= start && today <= end;
+  });
+  
+  
+  const schedulesToShow = showAllPrograms
+    ? scheduleByDay
+    : [currentWeekSchedule].filter(
+      (weekSchedule): weekSchedule is WeekSchedule => weekSchedule !== undefined
+    );
+    
+    const handleShowAllPrograms=()=>{
+      setShowAllPrograms(!showAllPrograms)
+    }
+  
 
   return (
     <section>
@@ -953,7 +971,7 @@ export default function Dashboard() {
 
             <Button
               variant="outline"
-              onClick={() => setShowAllPrograms(!showAllPrograms)}
+              onClick={handleShowAllPrograms}
               className="flex items-center gap-2 bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors w-full sm:w-auto"
               disabled={isLoading}
             >
@@ -977,9 +995,7 @@ export default function Dashboard() {
               <ScheduleSkeleton />
             ) : scheduleByDay && scheduleByDay.length > 0 ? (
               <ScheduleWeek
-                schedulesByWeek={
-                  showAllPrograms ? scheduleByDay : [scheduleByDay[0]]
-                }
+                schedulesByWeek={schedulesToShow}
                 selectedStage={selectedStage}
                 selectedDepartment={selectedDepartment}
                 showAll={showAll}
