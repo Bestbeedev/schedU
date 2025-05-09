@@ -30,8 +30,7 @@ export default function Hero() {
           </h1>
   
           <p className="max-w-xl text-sm mx-auto text-gray-300   sm:text-base">
-          Bienvenue sur schedU – votre emploi du temps, clair et accessible, partout.
-          Suivez vos cours semaine après semaine grâce à une interface intuitive et toujours à jour. Fini les informations dispersées : retrouvez en un clin d'œil vos horaires, salles et enseignants, depuis n’importe quel appareil.
+          {"Bienvenue sur schedU – votre emploi du temps, clair et accessible partout.Suivez vos cours semaine après semaine grâce à une interface intuitive et toujours à jour. Fini les informations dispersées : retrouvez en un clin d'œil vos horaires, salles et enseignants, depuis n’importe quel appareil."}
           </p>
   
           <div className="flex justify-center">

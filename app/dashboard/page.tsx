@@ -12,7 +12,7 @@ import {
   Book,
   Calendar1Icon,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { scheduleSchema, weekSchema } from "@/zod/validation";
 import { fr } from "date-fns/locale";
@@ -120,18 +120,18 @@ export default function Dashboard() {
     setCheckedDate(!checkedDate);
   };
 
-  const handleSetMondayFriday = (checked: boolean) => {
+  const handleSetMondayFriday = useCallback((checked: boolean) => {
     if (checked === false) {
       formWeeks.setValue("end_date", friday);
       formWeeks.setValue("start_date", monday);
     }
-    return;
-  };
-
+  }, [friday, monday, formWeeks]);
+  
   useEffect(() => {
     handleSetMondayFriday(checkedDate);
-  }, [checkedDate,handleSetMondayFriday]);
+  }, [checkedDate, handleSetMondayFriday]);
 
+  
   const [departments, setDepartments] = useState<Filiere[]>([]);
   const [stages, setStages] = useState<Filiere[]>([]);
   const [rooms, setRooms] = useState<Filiere[]>([]);
