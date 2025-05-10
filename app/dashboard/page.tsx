@@ -288,11 +288,21 @@ export default function Dashboard() {
   
   const currentWeekSchedule = scheduleByDay.find(weekSchedule => {
     const today = new Date();
-    // Force début de journée et fin de journée
-    const start = new Date(weekSchedule.week.start_date + "T00:00:00");
-    const end = new Date(weekSchedule.week.end_date + "T23:59:59");
-    return today >= start && today <= end;
+  
+    const start = new Date(weekSchedule.week.start_date);
+    const end = new Date(weekSchedule.week.end_date);
+  
+    // Étendre la fin de semaine jusqu'à samedi soir (vendredi + 1 jour)
+    const extendedEnd = new Date(end);
+    extendedEnd.setDate(extendedEnd.getDate() + 1); // Vendredi -> Samedi
+    extendedEnd.setHours(23, 59, 59, 999);
+  
+    // Normaliser today
+    today.setHours(12, 0, 0, 0);
+  
+    return today >= start && today <= extendedEnd;
   });
+  
   
   
   const schedulesToShow = showAllPrograms
